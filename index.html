@@ -192,6 +192,12 @@ text-align: center;
 background: #064e3b;
 color: white;
 }
+/* Desktop sidebar visible by default */
+@media (min-width: 768px) {
+#sidebar {
+transform: translateX(0) !important;
+}
+}
 </style>
 </head>
 <body class="text-gray-800 bg-green-50">
@@ -944,7 +950,13 @@ window.loadPage = async (page) => {
   else if (page === 'timetableParent') {
     title.innerText = "Class Timetable";
     const childClass = currentUser.child.class;
-    container.innerHTML = `<div class="bg-white p-6 rounded-xl shadow fade-in"><h3 class="font-bold text-lg mb-4">Timetable for ${childClass}</h3><div id="parent-timetable-container" class="overflow-x-auto"></div></div>`;
+    container.innerHTML = `<div class="bg-white p-6 rounded-xl shadow fade-in">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="font-bold text-lg">Timetable for ${childClass}</h3>
+        <button onclick="downloadTimetablePDF('${childClass}')" class="bg-green-600 text-white px-4 py-2 rounded text-sm font-bold shadow hover:bg-green-700">Download PDF (Landscape)</button>
+      </div>
+      <div id="parent-timetable-container" class="overflow-x-auto"></div>
+    </div>`;
     loadParentTimetable(childClass);
   }
 };
@@ -1299,7 +1311,7 @@ window.switchTabContent = (tab) => {
   const c=document.getElementById('tab-content');
   if(tab==='subjects'){c.innerHTML=`<div class="flex gap-2 mb-4"><select id="sub-class" class="border p-2 rounded bg-gray-50" onchange="loadSubjects()"></select><input type="text" id="sub-name" placeholder="Subject Name" class="border p-2 rounded flex-1 bg-gray-50"><button onclick="addSubject()" class="bg-green-600 text-white px-4 py-2 rounded">Add</button></div><ul id="subject-list" class="grid grid-cols-2 gap-2"></ul>`;populateClassSelect('sub-class');if(currentUser.role==='teacher')loadSubjects();}
   else if(tab==='marks'){c.innerHTML=`<div class="flex flex-col md:flex-row gap-4 mb-4 items-center"><select id="mark-class" class="border p-2 rounded w-full bg-gray-50" onchange="loadMarkSubjects()"></select><select id="mark-sub" class="border p-2 rounded w-full bg-gray-50" onchange="loadMarks()"><option>Subject...</option></select><button onclick="toggleMarkInputType()" id="mark-toggle-btn" class="bg-blue-100 text-blue-700 px-3 py-2 rounded text-xs font-bold whitespace-nowrap">Switch to CBT Import</button></div><div class="overflow-x-auto"><table class="w-full text-sm border"><thead class="bg-gray-100"><tr><th>Student</th><th class="w-20">CA (40)</th><th class="w-20">Exam (60)</th><th>Total</th></tr></thead><tbody id="mark-list"></tbody></table></div>`;populateClassSelect('mark-class');if(currentUser.role==='teacher')setTimeout(loadMarkSubjects,500);}
-  else if(tab==='timetable'){c.innerHTML=`<div class="flex justify-between mb-4"><select id="tt-class" class="border p-2 rounded bg-gray-50" onchange="loadTimetable()"></select><button onclick="saveTimetable()" class="bg-green-600 text-white px-3 py-1 rounded shadow ml-2">Save</button></div><div class="overflow-x-auto"><table id="tt-grid" class="w-full text-sm border-collapse border border-gray-400"></table></div>`;populateClassSelect('tt-class');if(currentUser.role==='teacher')setTimeout(loadTimetable,500);}
+  else if(tab==='timetable'){c.innerHTML=`<div class="flex justify-between mb-4"><select id="tt-class" class="border p-2 rounded bg-gray-50" onchange="loadTimetable()"></select><button onclick="saveTimetable()" class="bg-green-600 text-white px-3 py-1 rounded shadow ml-2">Save</button><button onclick="downloadTimetablePDF(document.getElementById('tt-class').value)" class="bg-purple-600 text-white px-3 py-1 rounded shadow ml-2">Download PDF</button></div><div class="overflow-x-auto"><table id="tt-grid" class="w-full text-sm border-collapse border border-gray-400"></table></div>`;populateClassSelect('tt-class');if(currentUser.role==='teacher')setTimeout(loadTimetable,500);}
 };
 window.addSubject=async()=>{const c=document.getElementById('sub-class').value,n=document.getElementById('sub-name').value;if(c&&n){await addDoc(collection(db,"subjects"),{class:c,name:n});loadSubjects();document.getElementById('sub-name').value='';}};
 window.loadSubjects=async()=>{const c=document.getElementById('sub-class').value;if(!c)return;onSnapshot(query(collection(db,"subjects"),where("class","==",c)),(s)=>{let h='';s.forEach(d=>h+=`<li class="bg-gray-50 p-2 rounded border flex justify-between text-sm items-center">${d.data().name} <button onclick="deleteSubject('${d.id}')" class="text-red-500 hover:bg-red-50 p-1"><i class="fas fa-times"></i></button></li>`);document.getElementById('subject-list').innerHTML=h;});};
@@ -1310,6 +1322,29 @@ window.saveMark=async(i)=>{const tr=i.closest('tr'),sid=tr.dataset.sid,c=documen
 window.toggleMarkInputType=()=>{const b=document.getElementById('mark-toggle-btn'),ins=document.querySelectorAll('.mark-exam-input');if(b.innerText.includes("CBT")){b.innerText="Switch to Manual";ins.forEach(i=>i.setAttribute('readonly',true));}else{b.innerText="Switch to CBT";ins.forEach(i=>i.removeAttribute('readonly'));}};
 window.loadTimetable=async()=>{const c=document.getElementById('tt-class').value;if(!c)return;const s=await getDoc(doc(db,"timetables",c));if(s.exists())document.getElementById('tt-grid').innerHTML=s.data().html;else renderTTGrid();};
 window.saveTimetable=async()=>{await setDoc(doc(db,"timetables",document.getElementById('tt-class').value),{html:document.getElementById('tt-grid').innerHTML});showToast("Saved");};
+
+// Download Timetable as Landscape PDF
+window.downloadTimetablePDF = async (className) => {
+  if(!className) return showToast('Select a class first', 'error');
+  const ttDoc = await getDoc(doc(db, "timetables", className));
+  if(!ttDoc.exists()) return showToast('No timetable found for this class', 'error');
+  const html = ttDoc.data().html;
+  const pdfContent = `
+    <div style="padding: 10mm; font-family: 'Poppins', sans-serif;">
+      <h2 style="text-align: center; color: #064e3b;">TASIU ADAMU COMMUNITY COLLEGE</h2>
+      <h3 style="text-align: center;">Timetable for ${className} - ${currentSession} Term ${currentTerm}</h3>
+      <div style="margin-top: 20px;">${html}</div>
+    </div>
+  `;
+  const zone = document.getElementById('pdf-render-zone');
+  zone.innerHTML = pdfContent;
+  html2pdf().from(zone).set({
+    margin: 5, filename: `Timetable_${className}.pdf`,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+  }).save().then(() => zone.innerHTML = '');
+};
 
 // CBT
 window.loadExams=async()=>{const l=document.getElementById('exam-list');let q=collection(db,"exams");if(currentUser.role==='teacher')q=query(q,where("class","==",currentUser.assignedClass));onSnapshot(q,s=>{l.innerHTML='';const sel=document.getElementById('result-exam-select');if(sel)sel.innerHTML='<option>Select...</option>';s.forEach(d=>{const e=d.data();l.innerHTML+=`<div class="border p-4 rounded bg-gray-50 shadow-sm"><h4 class="font-bold text-green-800">${e.title}</h4><p class="text-xs text-gray-500">${e.class} | ${e.duration}m | ${e.questions.length}Q</p><div class="mt-2 flex gap-2"><button onclick="toggleExam('${d.id}',${e.active})" class="text-xs px-2 py-1 rounded ${e.active?'bg-red-100 text-red-600':'bg-green-100 text-green-600'}">${e.active?'Close':'Open'}</button><button onclick="deleteDoc(doc(db,'exams','${d.id}'))" class="text-xs px-2 py-1 bg-gray-200">Del</button></div></div>`;if(sel){const o=document.createElement('option');o.value=d.id;o.innerText=e.title;sel.appendChild(o);}});});};
