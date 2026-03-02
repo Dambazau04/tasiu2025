@@ -1,0 +1,2039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>TASIU ADAMU COMMUNITY COLLEGE - Ultimate Portal</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cinzel:wght@400;700&family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<!-- SheetJS for Excel -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<!-- Chart.js for Dashboard -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- html2pdf for PDF Downloads -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<!-- Confetti -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<style>
+:root { --primary: #064e3b; --secondary: #047857; --accent: #d97706; }
+body { font-family: 'Poppins', sans-serif; background-color: #f0fdf4; }
+.arabic-text { font-family: 'Amiri', serif; direction: rtl; }
+.royal-font { font-family: 'Cinzel', serif; }
+.serif-font { font-family: 'Playfair Display', serif; }
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+.loader { border: 3px solid #f3f3f3; border-top: 3px solid var(--accent); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+.fade-in { animation: fadeIn 0.4s ease-in-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.stamp-box {
+width: 100px; height: 100px;
+border: 3px double #b91c1c;
+border-radius: 50%;
+display: flex; flex-direction: column; justify-content: center; align-items: center;
+color: #b91c1c;
+font-family: 'Courier Prime', monospace;
+font-weight: 700; text-transform: uppercase;
+text-align: center;
+opacity: 0.8;
+transform: rotate(-12deg);
+background: rgba(255, 255, 255, 0.1);
+mask-image: url('https://www.transparenttextures.com/patterns/aged-paper.png');
+-webkit-mask-image: url('https://www.transparenttextures.com/patterns/aged-paper.png');
+position: absolute; pointer-events: none; z-index: 10;
+}
+.stamp-text-sm { font-size: 8px; letter-spacing: 1px; }
+.stamp-text-lg { font-size: 12px; border-top: 1px solid #b91c1c; border-bottom: 1px solid #b91c1c; margin: 2px 0; padding: 1px 0; }
+#pdf-render-zone { position: absolute; top: -10000px; left: -10000px; z-index: -1; }
+.report-card-design {
+width: 210mm; min-height: 297mm; background: #fff; padding: 10mm;
+border: 10px solid #064e3b;
+outline: 5px solid #d97706; outline-offset: -15px;
+position: relative; box-sizing: border-box;
+background-image: radial-gradient(#064e3b 0.5px, transparent 0.5px);
+background-size: 20px 20px;
+background-color: #fffff0;
+}
+.report-watermark {
+position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg);
+font-size: 100px; color: rgba(6, 78, 59, 0.05); font-weight: bold; pointer-events: none; white-space: nowrap;
+}
+/* ID Card front & back */
+.id-card-container {
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 5px;
+padding: 5px;
+}
+.id-card-front, .id-card-back {
+width: 2.125in;
+height: 3.37in;
+background: linear-gradient(135deg, #064e3b 0%, #047857 60%, #065f46 100%);
+border-radius: 10px;
+position: relative;
+overflow: hidden;
+color: white;
+box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+font-family: 'Poppins', sans-serif;
+padding: 10px;
+box-sizing: border-box;
+}
+.id-card-front {
+background: linear-gradient(145deg, #064e3b, #047857);
+}
+.id-card-back {
+background: linear-gradient(145deg, #065f46, #047857);
+}
+.id-card-pattern {
+position: absolute;
+inset: 0;
+background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23d97706' fill-opacity='0.1' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E");
+}
+.id-photo {
+width: 80px;
+height: 80px;
+border-radius: 50%;
+border: 3px solid #fbbf24;
+object-fit: cover;
+margin: 10px auto;
+}
+.receipt-design {
+width: 80mm; min-height: 120mm; background: #fff; padding: 5mm;
+border: 1px solid #ccc; position: relative; box-sizing: border-box;
+box-shadow: 0 0 10px rgba(0,0,0,0.1);
+font-family: 'Courier Prime', monospace;
+}
+.tt-cell { min-width: 80px; height: 60px; text-align: center; vertical-align: middle; padding: 4px; font-size: 12px; border: 1px solid #cbd5e1; }
+.tt-header { background: #064e3b; color: white; font-weight: bold; text-transform: uppercase; font-size: 11px; padding: 8px; }
+.registration-container {
+max-width: 800px; margin: 2rem auto; background: white; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden;
+}
+.step-indicator {
+display: flex; background: #f9fafb; border-bottom: 1px solid #e5e7eb;
+}
+.step {
+flex: 1; text-align: center; padding: 1rem; font-size: 0.9rem; font-weight: 600; color: #9ca3af; border-bottom: 3px solid transparent;
+}
+.step.active {
+color: #064e3b; border-bottom-color: #064e3b;
+}
+.acknowledgement-slip {
+width: 210mm; min-height: 297mm; background: #fff; padding: 10mm; border: 5px solid #064e3b; outline: 2px solid #d97706; outline-offset: -5px; position: relative; box-sizing: border-box; overflow: visible; font-size: 12px;
+}
+.admission-letter {
+width: 210mm; min-height: 297mm; background: #fff; padding: 10mm; border: 8px double #064e3b; position: relative; box-sizing: border-box; background-image: linear-gradient(45deg, rgba(6,78,59,0.02) 25%, transparent 25%), linear-gradient(-45deg, rgba(6,78,59,0.02) 25%, transparent 25%); background-size: 20px 20px; overflow: visible; font-size: 12px;
+}
+/* Mobile sidebar overlay */
+#sidebar-overlay {
+display: none;
+position: fixed;
+inset: 0;
+background: rgba(0,0,0,0.5);
+z-index: 45;
+}
+#sidebar-overlay.active {
+display: block;
+}
+#sidebar {
+transition: transform 0.3s ease-in-out;
+z-index: 50;
+}
+#sidebar.-translate-x-full {
+transform: translateX(-100%);
+}
+@media (max-width: 768px) {
+#sidebar {
+width: 85%;
+max-width: 300px;
+}
+}
+/* Broadcast modal styling */
+.broadcast-item {
+background: #f9fafb;
+border-left: 4px solid #d97706;
+transition: all 0.2s;
+}
+.broadcast-item.unread {
+background: #fef3c7;
+border-left-color: #b45309;
+}
+/* Class record table */
+.class-record-table {
+border-collapse: collapse;
+width: 100%;
+font-size: 10px;
+}
+.class-record-table th, .class-record-table td {
+border: 1px solid #064e3b;
+padding: 4px;
+text-align: center;
+}
+.class-record-table th {
+background: #064e3b;
+color: white;
+}
+/* Timetable for parent */
+.parent-timetable {
+width: 100%;
+border-collapse: collapse;
+}
+.parent-timetable th, .parent-timetable td {
+border: 1px solid #064e3b;
+padding: 8px;
+text-align: center;
+}
+.parent-timetable th {
+background: #064e3b;
+color: white;
+}
+</style>
+</head>
+<body class="text-gray-800 bg-green-50">
+
+<!-- HIDDEN PDF STAGE -->
+<div id="pdf-render-zone"></div>
+
+<!-- Login Section -->
+<div id="login-section" class="min-h-screen flex items-center justify-center bg-[url('https://www.transparenttextures.com/patterns/arabesque.png')] bg-green-900 p-4">
+  <div class="bg-white/95 backdrop-blur-md p-8 rounded-2xl shadow-2xl w-full max-w-md fade-in relative overflow-hidden border-t-8 border-yellow-500">
+    <div class="text-center mb-6">
+      <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-green-600 shadow-xl relative z-10">
+        <i class="fas fa-book-quran text-5xl text-green-700"></i>
+      </div>
+      <h2 class="text-xl font-bold text-green-800 arabic-text mb-1" dir="rtl">كلية تاسع آدم المجتمع</h2>
+      <h3 class="text-sm font-bold text-gray-800 royal-font tracking-widest leading-tight">TASIU ADAMU COMMUNITY COLLEGE<br>OF SCIENCE AND QUR'ANIC STUDIES</h3>
+      <p class="text-[10px] text-yellow-600 font-bold uppercase mt-2">Motto: Knowledge is Power</p>
+    </div>
+    <div class="flex mb-6 bg-gray-100 rounded-lg p-1">
+      <button onclick="switchLogin('staff')" id="tab-staff" class="flex-1 py-2 text-xs font-bold rounded shadow bg-white text-green-800 transition">Staff / Admin</button>
+      <button onclick="switchLogin('parent')" id="tab-parent" class="flex-1 py-2 text-xs font-bold text-gray-500 hover:text-green-800 transition">Parent</button>
+      <button onclick="switchLogin('student')" id="tab-student" class="flex-1 py-2 text-xs font-bold text-gray-500 hover:text-green-800 transition">Student CBT</button>
+    </div>
+
+    <!-- Forms -->
+    <form id="staff-login-form" class="space-y-4">
+      <div class="relative"><i class="fas fa-user absolute left-3 top-3.5 text-green-600"></i><input type="text" id="login-email" class="w-full pl-10 p-3 border rounded-lg bg-gray-50 text-sm focus:ring-2 focus:ring-green-500 outline-none transition" placeholder="Username / Email" required></div>
+      <div class="relative"><i class="fas fa-lock absolute left-3 top-3.5 text-green-600"></i><input type="password" id="login-password" class="w-full pl-10 p-3 border rounded-lg bg-gray-50 text-sm focus:ring-2 focus:ring-green-500 outline-none transition" placeholder="Password" required></div>
+      <button type="submit" class="w-full bg-green-800 text-white font-bold py-3 rounded-lg hover:bg-green-900 transition shadow-lg transform hover:scale-[1.02]">Login Securely</button>
+      <div class="text-center mt-2"><a href="javascript:void(0)" onclick="forgotPassword()" class="text-xs text-blue-600 hover:text-blue-800 font-bold hover:underline flex items-center justify-center gap-1"><i class="fab fa-whatsapp"></i> Forgot Password? Contact Admin</a></div>
+    </form>
+    <form id="parent-login-form" class="space-y-4 hidden">
+      <div class="bg-blue-50 p-3 rounded text-xs text-blue-800 border-l-4 border-blue-500 flex gap-2"><i class="fas fa-info-circle"></i><span>Enter Student ID to access results & payments.</span></div>
+      <div class="relative"><i class="fas fa-child absolute left-3 top-3.5 text-blue-600"></i><input type="text" id="parent-login-id" class="w-full pl-10 p-3 border rounded-lg bg-gray-50 text-sm" placeholder="Student ID (e.g. TACC/2025/001)" required></div>
+      <button type="submit" class="w-full bg-blue-800 text-white font-bold py-3 rounded-lg hover:bg-blue-900 transition shadow-lg transform hover:scale-[1.02]">Parent Login</button>
+    </form>
+    <form id="student-login-form" class="space-y-4 hidden">
+      <div class="bg-yellow-50 p-3 rounded text-xs text-yellow-800 border-l-4 border-yellow-500 flex gap-2"><i class="fas fa-laptop"></i><span>CBT Exam Portal Access.</span></div>
+      <div class="relative"><i class="fas fa-id-badge absolute left-3 top-3.5 text-yellow-600"></i><input type="text" id="student-login-id" class="w-full pl-10 p-3 border rounded-lg bg-gray-50 text-sm" placeholder="Student ID" required></div>
+      <button type="submit" class="w-full bg-yellow-600 text-white font-bold py-3 rounded-lg hover:bg-yellow-700 transition shadow-lg transform hover:scale-[1.02]">Start Exam</button>
+    </form>
+
+    <div class="mt-4 text-center border-t pt-4">
+      <a href="#" onclick="openModal('how-it-works-modal')" class="text-xs font-bold text-green-700 hover:underline flex items-center justify-center gap-2"><i class="fas fa-book-reader"></i> How to use this Portal</a>
+    </div>
+    <!-- Admission Links -->
+    <div class="mt-4 flex flex-col sm:flex-row gap-2">
+      <button onclick="showRegistration()" class="flex-1 bg-yellow-500 text-white text-xs font-bold py-2 rounded hover:bg-yellow-600 transition"><i class="fas fa-user-plus mr-1"></i> Apply for Admission</button>
+      <button onclick="showStatusCheck()" class="flex-1 bg-purple-600 text-white text-xs font-bold py-2 rounded hover:bg-purple-700 transition"><i class="fas fa-search mr-1"></i> Check Admission Status</button>
+    </div>
+    <div class="mt-8 text-center text-[10px] text-gray-400">
+      Developed by <span class="font-bold text-gray-600">Abu-Abdurrahman CodeVerge Technology</span>
+    </div>
+  </div>
+</div>
+
+<!-- Registration Section -->
+<div id="registration-section" class="hidden min-h-screen bg-green-50 p-4">
+  <div class="registration-container">
+    <div class="step-indicator">
+      <div class="step active" id="step1">1. Personal Details</div>
+      <div class="step" id="step2">2. Review</div>
+      <div class="step" id="step3">3. Submission</div>
+    </div>
+    <div id="reg-message" class="p-4 bg-yellow-100 text-yellow-800 hidden"></div>
+    <div id="reg-step1" class="p-6">
+      <h3 class="text-xl font-bold text-green-800 mb-4">Fill Your Information</h3>
+      <form id="reg-form" onsubmit="event.preventDefault(); reviewRegistration();">
+        <div class="space-y-4">
+          <div><label class="text-xs font-bold text-gray-500">Full Name</label><input type="text" id="reg-name" class="w-full border p-3 rounded-lg bg-gray-50" required></div>
+          <div><label class="text-xs font-bold text-gray-500">Date of Birth</label><input type="date" id="reg-dob" class="w-full border p-3 rounded-lg bg-gray-50" required></div>
+          <div><label class="text-xs font-bold text-gray-500">Class Applying For</label><select id="reg-class" class="w-full border p-3 rounded-lg bg-gray-50" required><option value="">Select Class</option></select></div>
+          <div><label class="text-xs font-bold text-gray-500">Passport Photo</label><input type="file" id="reg-photo" accept="image/*" class="w-full border p-2 rounded-lg bg-gray-50" required></div>
+          <button type="submit" class="w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition">Proceed to Review</button>
+        </div>
+      </form>
+    </div>
+    <div id="reg-step2" class="p-6 hidden">
+      <h3 class="text-xl font-bold text-green-800 mb-4">Review Your Details</h3>
+      <div class="bg-gray-50 p-4 rounded-lg space-y-3">
+        <div class="flex items-center gap-4">
+          <img id="review-photo" src="" class="w-24 h-24 rounded-full object-cover border-4 border-green-600">
+          <div><p><strong>Name:</strong> <span id="review-name"></span></p><p><strong>DOB:</strong> <span id="review-dob"></span></p><p><strong>Class:</strong> <span id="review-class"></span></p></div>
+        </div>
+      </div>
+      <div class="flex gap-3 mt-6">
+        <button onclick="backToStep1()" class="flex-1 bg-gray-500 text-white py-2 rounded-lg font-bold hover:bg-gray-600 transition">Edit</button>
+        <button onclick="submitRegistration()" class="flex-1 bg-green-600 text-white py-2 rounded-lg font-bold hover:bg-green-700 transition">Submit Application</button>
+      </div>
+    </div>
+    <div id="reg-step3" class="p-6 hidden">
+      <div class="text-center">
+        <i class="fas fa-check-circle text-6xl text-green-600 mb-4"></i>
+        <h3 class="text-2xl font-bold text-green-800">Congratulations!</h3>
+        <p class="text-gray-600 mb-2">Your application has been submitted successfully.</p>
+        <p class="text-sm bg-yellow-100 p-2 rounded inline-block font-mono">Application No: <span id="app-no-display" class="font-bold"></span></p>
+        <div class="mt-6"><button onclick="downloadAcknowledgement()" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold shadow hover:bg-blue-700 transition"><i class="fas fa-download mr-2"></i> Download Acknowledgement Slip</button></div>
+        <button onclick="goToLogin()" class="mt-4 text-green-600 underline text-sm">Back to Login</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Admission Status Check Section -->
+<div id="status-section" class="hidden min-h-screen flex items-center justify-center bg-green-50 p-4">
+  <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6">
+    <h2 class="text-2xl font-bold text-green-800 mb-4">Check Admission Status</h2>
+    <div class="space-y-4">
+      <input type="text" id="status-appno" class="w-full border p-3 rounded-lg bg-gray-50" placeholder="Enter Application Number">
+      <button onclick="checkAdmissionStatus()" class="w-full bg-purple-600 text-white font-bold py-3 rounded-lg hover:bg-purple-700 transition">Check Status</button>
+    </div>
+    <div id="status-result" class="mt-6 hidden">
+      <div class="border-t pt-4">
+        <p id="status-name" class="font-bold"></p>
+        <p id="status-class" class="text-sm text-gray-600"></p>
+        <p id="status-decision" class="mt-2 p-2 rounded text-white font-bold"></p>
+        <p id="status-comment" class="text-sm text-gray-500 italic mt-1"></p>
+        <div id="status-download" class="mt-4 hidden"><button onclick="downloadAdmissionLetterFromStatus()" class="bg-green-600 text-white px-4 py-2 rounded font-bold w-full"><i class="fas fa-file-pdf mr-2"></i> Download Admission Letter</button></div>
+      </div>
+    </div>
+    <button onclick="goToLogin()" class="mt-4 text-green-600 underline text-sm">Back to Login</button>
+  </div>
+</div>
+
+<!-- Dashboard -->
+<div id="dashboard-section" class="hidden min-h-screen flex bg-gray-50">
+  <!-- Sidebar overlay for mobile -->
+  <div id="sidebar-overlay" onclick="toggleSidebar()"></div>
+  <aside id="sidebar" class="bg-green-900 text-white w-64 fixed h-full z-50 flex flex-col shadow-2xl transition-transform transform -translate-x-full md:translate-x-0">
+    <div class="p-6 text-center bg-green-950 border-b border-green-800 relative overflow-hidden">
+      <i class="fas fa-mosque absolute -right-4 -bottom-4 text-8xl text-green-800 opacity-20"></i>
+      <h1 class="font-bold text-lg royal-font text-yellow-400 leading-tight">TASIU ADAMU</h1>
+      <p class="text-[9px] tracking-widest text-gray-300 uppercase mt-1">Science & Qur'anic Studies</p>
+      <button onclick="toggleSidebar()" class="absolute top-2 right-2 text-white md:hidden"><i class="fas fa-times"></i></button>
+    </div>
+    <nav class="flex-1 overflow-y-auto py-4 space-y-1" id="nav-links"></nav>
+    <div class="p-4 bg-green-950 border-t border-green-800">
+      <div class="text-[9px] text-center text-gray-400 mb-2">CodeVerge Technology</div>
+      <button onclick="logout()" class="w-full flex items-center justify-center px-4 py-2 bg-red-600 hover:bg-red-700 rounded text-xs font-bold text-white shadow transition"><i class="fas fa-sign-out-alt mr-2"></i> LOGOUT</button>
+    </div>
+  </aside>
+  <main class="md:ml-64 flex-1 flex flex-col min-h-screen w-full transition-all">
+    <header class="bg-white shadow-sm p-4 flex justify-between items-center sticky top-0 z-30 border-b border-gray-200">
+      <div class="flex items-center">
+        <button onclick="toggleSidebar()" class="md:hidden text-green-800 text-xl mr-4"><i class="fas fa-bars"></i></button>
+        <h2 class="text-xl font-bold text-gray-800 serif-font" id="header-title">Dashboard</h2>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="text-right hidden sm:block">
+          <p id="user-role-display" class="text-xs font-bold text-green-600 uppercase tracking-wider">User</p>
+          <p id="term-display" class="text-[10px] text-gray-500 font-mono bg-gray-100 px-2 rounded">Session Loading...</p>
+        </div>
+        <div id="broadcast-bell" class="relative cursor-pointer text-gray-600 hover:text-green-600 transition" onclick="showBroadcasts()">
+          <i class="fas fa-bell text-xl"></i>
+          <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full hidden border-2 border-white" id="broadcast-dot"></span>
+        </div>
+      </div>
+    </header>
+    <div class="p-4 md:p-6 flex-1 overflow-y-auto custom-scrollbar" id="main-container"></div>
+  </main>
+</div>
+
+<!-- Student CBT Interface -->
+<div id="student-cbt-interface" class="hidden fixed inset-0 bg-white z-50 flex flex-col">
+  <header class="bg-white shadow px-6 py-3 flex justify-between items-center border-b border-green-600">
+    <div class="flex items-center gap-3">
+      <img id="cbt-photo" src="" class="w-10 h-10 rounded-full border-2 border-green-600 object-cover">
+      <div><h2 id="cbt-name" class="font-bold text-sm text-gray-800">Student Name</h2><p id="cbt-id" class="text-xs text-gray-500 font-mono">ID</p></div>
+    </div>
+    <div class="font-bold text-green-800 text-lg hidden md:block" id="cbt-exam-title">Exam Title</div>
+    <div class="flex items-center gap-3">
+      <div id="cbt-timer" class="bg-red-50 text-red-600 font-mono font-bold text-lg px-4 py-1 rounded border border-red-200 shadow-inner">00:00</div>
+      <button onclick="submitExam()" id="cbt-submit-btn" class="bg-green-700 text-white text-xs font-bold px-4 py-2 rounded shadow hover:bg-green-800 transition">SUBMIT</button>
+    </div>
+  </header>
+  <div id="cbt-instructions" class="p-6 max-w-3xl mx-auto hidden mt-10">
+    <div class="bg-white border-l-4 border-yellow-500 p-6 rounded shadow-lg">
+      <h3 class="font-bold text-xl mb-4 text-gray-800 flex items-center gap-2"><i class="fas fa-exclamation-circle text-yellow-500"></i> Instructions</h3>
+      <div id="cbt-inst-text" class="text-gray-700 mb-6 text-sm leading-relaxed whitespace-pre-wrap"></div>
+      <button onclick="startExamQuestions()" class="bg-blue-600 text-white px-8 py-3 rounded font-bold shadow hover:bg-blue-700 transition w-full md:w-auto">Start Exam Now</button>
+    </div>
+  </div>
+  <div id="cbt-content" class="flex-1 overflow-y-auto p-4 max-w-4xl mx-auto w-full hidden bg-gray-50"></div>
+</div>
+
+<!-- Modals -->
+<div id="how-it-works-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-xl p-6 w-full max-w-lg shadow-2xl relative fade-in">
+    <button onclick="closeModal('how-it-works-modal')" class="absolute top-4 right-4 text-gray-400 hover:text-red-500"><i class="fas fa-times text-xl"></i></button>
+    <h3 class="font-bold text-xl text-green-800 mb-4 border-b pb-2">How It Works</h3>
+    <div class="space-y-4 text-sm text-gray-600 overflow-y-auto max-h-80 custom-scrollbar">
+      <div class="flex gap-3"><div class="bg-green-100 w-8 h-8 flex items-center justify-center rounded-full text-green-700 font-bold shrink-0">1</div><div><strong>Login:</strong> Select your role (Staff, Parent, or Student). Staff use credentials, Parents/Students use Student ID.</div></div>
+      <div class="flex gap-3"><div class="bg-blue-100 w-8 h-8 flex items-center justify-center rounded-full text-blue-700 font-bold shrink-0">2</div><div><strong>Dashboard:</strong> View key stats. Teachers manage students/results. Parents view reports/history.</div></div>
+      <div class="flex gap-3"><div class="bg-yellow-100 w-8 h-8 flex items-center justify-center rounded-full text-yellow-700 font-bold shrink-0">3</div><div><strong>CBT Exams:</strong> Students take exams online. System auto-grades and saves results.</div></div>
+      <div class="flex gap-3"><div class="bg-purple-100 w-8 h-8 flex items-center justify-center rounded-full text-purple-700 font-bold shrink-0">4</div><div><strong>Reports:</strong> Teachers input scores. Admins publish results. Parents download professional PDF report cards.</div></div>
+      <div class="flex gap-3"><div class="bg-yellow-100 w-8 h-8 flex items-center justify-center rounded-full text-yellow-700 font-bold shrink-0">5</div><div><strong>Registration:</strong> New students can apply online. Admin manages admissions.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Broadcast Modal -->
+<div id="broadcast-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh] fade-in">
+    <div class="p-4 border-b flex justify-between items-center bg-gray-50">
+      <h3 class="font-bold text-lg text-gray-800">Broadcasts</h3>
+      <button onclick="closeModal('broadcast-modal')" class="text-gray-500 hover:text-red-500 transition"><i class="fas fa-times text-lg"></i></button>
+    </div>
+    <div id="broadcast-list" class="p-6 overflow-y-auto space-y-3"></div>
+    <!-- Admin compose area (hidden for non-admin) -->
+    <div id="broadcast-compose" class="p-4 border-t bg-gray-50 hidden">
+      <h4 class="font-bold text-sm mb-2">Send New Broadcast</h4>
+      <div class="flex gap-2 mb-2">
+        <select id="broadcast-target" class="border p-2 rounded flex-1 text-sm">
+          <option value="all">All Users</option>
+          <option value="parents">Parents Only</option>
+          <option value="teachers">Teachers Only</option>
+          <option value="individual">Individual (enter ID)</option>
+        </select>
+        <input type="text" id="broadcast-individual" placeholder="User ID/Email" class="border p-2 rounded text-sm w-40 hidden">
+      </div>
+      <textarea id="broadcast-message" rows="2" class="w-full border p-2 rounded text-sm" placeholder="Message..."></textarea>
+      <button onclick="sendBroadcast()" class="mt-2 bg-green-600 text-white px-4 py-2 rounded text-sm font-bold hover:bg-green-700">Send</button>
+    </div>
+  </div>
+</div>
+
+<div id="generic-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh] fade-in">
+    <div class="p-4 border-b flex justify-between items-center bg-gray-50">
+      <h3 id="modal-title" class="font-bold text-lg text-gray-800">Title</h3>
+      <button onclick="closeModal('generic-modal')" class="text-gray-500 hover:text-red-500 transition"><i class="fas fa-times text-lg"></i></button>
+    </div>
+    <div id="modal-body" class="p-6 overflow-y-auto"></div>
+  </div>
+</div>
+
+<div id="toast-container" class="fixed top-4 right-4 z-[100] flex flex-col gap-2"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where, setDoc, orderBy, getDoc, onSnapshot, limit, Timestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCX2BxAmJqLn4GeMdRmLSbsb6A6_bGNiFA",
+  authDomain: "tasiu-academy-19fbb.firebaseapp.com",
+  projectId: "tasiu-academy-19fbb",
+  storageBucket: "tasiu-academy-19fbb.firebasestorage.app",
+  messagingSenderId: "59309004302",
+  appId: "1:59309004302:web:97eb60b1dfc7dbc90b4e5f"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// STATE
+let currentUser = null;
+let currentSession = "2025/2026";
+let currentTerm = "1st Term";
+let resultsPublished = false;
+const classes = ["Prenursery", "Nursery 1", "Nursery 2", "Primary 1", "Primary 2", "Primary 3", "Primary 4", "Primary 5", "Primary 6", "Islamiyya", "JSS 1", "JSS 2", "JSS 3", "SS 1", "SS 2", "SS 3"];
+
+// --- UTILS ---
+const showToast = (msg, type='success') => {
+  const div = document.createElement('div');
+  div.className = `px-4 py-3 rounded shadow-lg text-white text-sm flex items-center gap-2 fade-in ${type==='error'?'bg-red-600':'bg-green-700'}`;
+  div.innerHTML = `<i class="fas ${type==='error'?'fa-exclamation-circle':'fa-check-circle'}"></i> ${msg}`;
+  document.getElementById('toast-container').appendChild(div);
+  setTimeout(() => div.remove(), 3000);
+};
+const fileToBase64 = file => new Promise((resolve, reject) => {
+  const reader = new FileReader();
+  reader.readAsDataURL(file);
+  reader.onload = () => resolve(reader.result);
+  reader.onerror = error => reject(error);
+});
+
+// Mobile sidebar toggle
+window.toggleSidebar = () => {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  sidebar.classList.toggle('-translate-x-full');
+  overlay.classList.toggle('active');
+};
+
+window.switchLogin = (type) => {
+  document.querySelectorAll('[id^="tab-"]').forEach(b => b.className = "flex-1 py-2 text-xs font-bold text-gray-500 hover:text-green-800 transition");
+  document.getElementById(`tab-${type}`).className = "flex-1 py-2 text-xs font-bold rounded shadow bg-white text-green-800 transition";
+  document.querySelectorAll('form').forEach(f => f.classList.add('hidden'));
+  document.getElementById(`${type}-login-form`).classList.remove('hidden');
+};
+
+window.openModal = (id) => document.getElementById(id).classList.remove('hidden');
+window.closeModal = (id) => document.getElementById(id).classList.add('hidden');
+
+window.forgotPassword = () => {
+  const msg = encodeURIComponent("Salam Admin, I forgot my password for the School Portal. Please assist me reset it. My details are: ");
+  window.open(`https://wa.me/2348107907647?text=${msg}`, '_blank');
+};
+
+// New navigation
+window.showRegistration = async () => {
+  // Check if registration is open
+  const settingsDoc = await getDoc(doc(db, "settings", "general"));
+  const regOpen = settingsDoc.exists() ? settingsDoc.data().registrationOpen : true;
+  const regMessage = settingsDoc.exists() ? settingsDoc.data().registrationMessage || '' : '';
+  if(!regOpen) {
+    document.getElementById('reg-message').classList.remove('hidden');
+    document.getElementById('reg-message').innerHTML = `<i class="fas fa-info-circle mr-2"></i>${regMessage || 'Registration is currently closed.'}`;
+    document.getElementById('reg-step1').classList.add('hidden');
+  } else {
+    document.getElementById('reg-message').classList.add('hidden');
+    document.getElementById('reg-step1').classList.remove('hidden');
+  }
+  document.getElementById('login-section').classList.add('hidden');
+  document.getElementById('registration-section').classList.remove('hidden');
+  populateClassSelect('reg-class', false, true); // public, no currentUser
+};
+window.showStatusCheck = () => {
+  document.getElementById('login-section').classList.add('hidden');
+  document.getElementById('status-section').classList.remove('hidden');
+  document.getElementById('status-result').classList.add('hidden');
+  document.getElementById('status-appno').value = '';
+};
+window.goToLogin = () => {
+  document.getElementById('registration-section').classList.add('hidden');
+  document.getElementById('status-section').classList.add('hidden');
+  document.getElementById('login-section').classList.remove('hidden');
+};
+
+// --- AUTH ---
+const checkAuth = () => {
+  const u = localStorage.getItem('schoolUser');
+  if(u) {
+    currentUser = JSON.parse(u);
+    if(currentUser.role === 'student') return;
+    initDashboard();
+  } else {
+    document.getElementById('dashboard-section').classList.add('hidden');
+    document.getElementById('login-section').classList.remove('hidden');
+  }
+};
+window.logout = () => { localStorage.removeItem('schoolUser'); location.reload(); };
+
+// Login Handlers
+document.getElementById('staff-login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('login-email').value;
+  const pass = document.getElementById('login-password').value;
+  if(email === 'Edu' && pass === 'Edu123') {
+    completeLogin({ name: 'Administrator', role: 'admin', email: 'admin' });
+    return;
+  }
+  const q = query(collection(db, "teachers"), where("email", "==", email), where("password", "==", pass));
+  const snap = await getDocs(q);
+  if(!snap.empty) completeLogin({ id: snap.docs[0].id, ...snap.docs[0].data(), role: 'teacher' });
+  else showToast('Invalid credentials', 'error');
+});
+
+document.getElementById('parent-login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const id = document.getElementById('parent-login-id').value.trim();
+  const q = query(collection(db, "students"), where("studentId", "==", id));
+  const snap = await getDocs(q);
+  if(!snap.empty) {
+    const child = { id: snap.docs[0].id, ...snap.docs[0].data() };
+    completeLogin({ name: 'Parent', role: 'parent', child, photo: child.photo || 'https://via.placeholder.com/150' });
+    await addActivity(`Parent Logged In: ${child.name}`);
+  } else showToast('Student ID not found', 'error');
+});
+
+document.getElementById('student-login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const id = document.getElementById('student-login-id').value.trim();
+  const q = query(collection(db, "students"), where("studentId", "==", id));
+  const snap = await getDocs(q);
+  if(!snap.empty) startCbtMode({ id: snap.docs[0].id, ...snap.docs[0].data() });
+  else showToast('Student ID incorrect', 'error');
+});
+
+function completeLogin(user) {
+  currentUser = user;
+  localStorage.setItem('schoolUser', JSON.stringify(user));
+  document.getElementById('login-section').classList.add('hidden');
+  document.getElementById('dashboard-section').classList.remove('hidden');
+  initDashboard();
+}
+
+async function initDashboard() {
+  const sDoc = await getDoc(doc(db, "settings", "general"));
+  if(sDoc.exists()) {
+    currentSession = sDoc.data().session || currentSession;
+    currentTerm = sDoc.data().term || currentTerm;
+    resultsPublished = sDoc.data().published || false;
+  }
+  document.getElementById('user-role-display').innerText = `${currentUser.name} (${currentUser.role})`;
+  document.getElementById('term-display').innerText = `${currentSession} | ${currentTerm}`;
+  renderNav();
+  loadPage('home');
+  // Broadcast listener
+  let qBroadcasts = collection(db, "broadcasts");
+  if(currentUser.role !== 'admin') {
+    qBroadcasts = query(qBroadcasts, where("target", "in", ['all', currentUser.role]));
+  }
+  onSnapshot(qBroadcasts, (snap) => {
+    const unread = snap.docs.filter(d => !d.data().readBy?.includes(currentUser.email || currentUser.name)).length;
+    const dot = document.getElementById('broadcast-dot');
+    if(unread > 0) dot.classList.remove('hidden'); else dot.classList.add('hidden');
+  });
+}
+
+function renderNav() {
+  const nav = document.getElementById('nav-links');
+  let html = `<a onclick="loadPage('home')" class="block px-6 py-3 hover:bg-green-800 text-sm cursor-pointer text-gray-200 border-l-4 border-transparent hover:border-yellow-400 transition"><i class="fas fa-chart-pie w-6"></i> Dashboard</a>`;
+  if(currentUser.role === 'admin' || currentUser.role === 'teacher') {
+    html += `
+      <a onclick="loadPage('students')" class="block px-6 py-3 hover:bg-green-800 text-sm cursor-pointer text-gray-200 border-l-4 border-transparent hover:border-yellow-400 transition"><i class="fas fa-user-graduate w-6"></i> Students</a>
+      <a onclick="loadPage('academic')" class="block px-6 py-3 hover:bg-green-800 text-sm cursor-pointer text-gray-200 border-l-4 border-transparent hover:border-yellow-400 transition"><i class="fas fa-book w-6"></i> Academic</a>
+      <a onclick="loadPage('cbt')" class="block px-6 py-3 hover:bg-green-800 text-sm cursor-pointer text-gray-200 border-l-4 border-transparent hover:border-yellow-400 transition"><i class="fas fa-laptop-code w-6"></i> CBT Exams</a>
+      <a onclick="loadPage('attendance')" class="block px-6 py-3 hover:bg-green-800 text-sm cursor-pointer text-gray-200 border-l-4 border-transparent hover:border-yellow-400 transition"><i class="fas fa-calendar-check w-6"></i> Attendance</a>
+      <a onclick="loadPage('reports')" class="block px-6 py-3 hover:bg-green-800 text-sm cursor-pointer text-gray-200 border-l-4 border-transparent hover:border-yellow-400 transition"><i class="fas fa-print w-6"></i> Reports</a>
+      <a onclick="loadPage('classRecord')" class="block px-6 py-3 hover:bg-green-800 text-sm cursor-pointer text-gray-200 border-l-4 border-transparent hover:border-yellow-400 transition"><i class="fas fa-table w-6"></i> Class Record</a>
+      <a onclick="loadPage('chat')" class="block px-6 py-3 hover:bg-green-800 text-sm cursor-pointer text-gray-200 border-l-4 border-transparent hover:border-yellow-400 transition"><i class="fas fa-comments w-6"></i> Chat</a>
+      <a onclick="loadPage('applications')" class="block px-6 py-3 hover:bg-green-800 text-sm cursor-pointer text-gray-200 border-l-4 border-transparent hover:border-yellow-400 transition"><i class="fas fa-file-signature w-6"></i> Applications</a>
+    `;
+    if(currentUser.role === 'admin') {
+      html += `
+        <div class="px-6 py-2 text-[10px] font-bold text-yellow-500 uppercase mt-2">Administration</div>
+        <a onclick="loadPage('teachers')" class="block px-6 py-3 hover:bg-green-800 text-sm cursor-pointer text-gray-200 border-l-4 border-transparent hover:border-yellow-400 transition"><i class="fas fa-chalkboard-teacher w-6"></i> Staff</a>
+        <a onclick="loadPage('finance')" class="block px-6 py-3 hover:bg-green-800 text-sm cursor-pointer text-gray-200 border-l-4 border-transparent hover:border-yellow-400 transition"><i class="fas fa-receipt w-6"></i> Finance</a>
+        <a onclick="loadPage('settings')" class="block px-6 py-3 hover:bg-green-800 text-sm cursor-pointer text-gray-200 border-l-4 border-transparent hover:border-yellow-400 transition"><i class="fas fa-cogs w-6"></i> Settings</a>
+        <a onclick="loadPage('broadcasts')" class="block px-6 py-3 hover:bg-green-800 text-sm cursor-pointer text-gray-200 border-l-4 border-transparent hover:border-yellow-400 transition"><i class="fas fa-bullhorn w-6"></i> Broadcasts</a>
+      `;
+    }
+  } else if (currentUser.role === 'parent') {
+    html += `
+      <a onclick="loadPage('reports')" class="block px-6 py-3 hover:bg-green-800 text-sm cursor-pointer text-gray-200 border-l-4 border-transparent hover:border-yellow-400 transition"><i class="fas fa-file-alt w-6"></i> Result History</a>
+      <a onclick="loadPage('payments')" class="block px-6 py-3 hover:bg-green-800 text-sm cursor-pointer text-gray-200 border-l-4 border-transparent hover:border-yellow-400 transition"><i class="fas fa-receipt w-6"></i> My Payments</a>
+      <a onclick="loadPage('timetableParent')" class="block px-6 py-3 hover:bg-green-800 text-sm cursor-pointer text-gray-200 border-l-4 border-transparent hover:border-yellow-400 transition"><i class="fas fa-clock w-6"></i> Timetable</a>
+      <a onclick="loadPage('chat')" class="block px-6 py-3 hover:bg-green-800 text-sm cursor-pointer text-gray-200 border-l-4 border-transparent hover:border-yellow-400 transition"><i class="fas fa-comments w-6"></i> Contact School</a>
+    `;
+  }
+  nav.innerHTML = html;
+}
+
+// --- ROUTER & PAGES ---
+window.loadPage = async (page) => {
+  const container = document.getElementById('main-container');
+  const title = document.getElementById('header-title');
+
+  if(page === 'home') {
+    title.innerText = "Dashboard Overview";
+    if (currentUser.role === 'parent') {
+      const child = currentUser.child;
+      container.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 fade-in">
+          <div class="bg-white p-6 rounded-xl shadow flex items-center gap-4 border-l-4 border-green-600">
+            <img src="${child.photo || 'https://via.placeholder.com/150'}" class="w-24 h-24 rounded-full object-cover border-4 border-green-600 shadow-md" onerror="this.src='https://via.placeholder.com/150'">
+            <div>
+              <h2 class="text-xl font-bold text-gray-800">${child.name || ''}</h2>
+              <p class="text-gray-500 text-sm font-mono bg-gray-100 px-2 py-1 rounded inline-block mt-1">${child.studentId || ''}</p>
+              <p class="text-green-700 font-bold mt-1">${child.class || ''}</p>
+            </div>
+          </div>
+          <div class="bg-white p-6 rounded-xl shadow">
+            <h4 class="font-bold text-gray-700 mb-4">Academic Trend</h4>
+            <canvas id="chart-parent"></canvas>
+          </div>
+        </div>`;
+      loadParentChart(child);
+      return;
+    }
+
+    const sSnap = await getDocs(collection(db, "students"));
+    let stats = `
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 fade-in mb-6">
+        <div class="bg-white p-6 rounded-xl shadow border-l-4 border-green-600 relative overflow-hidden">
+          <div class="text-gray-500 text-xs font-bold uppercase">Students</div>
+          <div class="text-3xl font-bold text-gray-800">${sSnap.size}</div>
+          <i class="fas fa-users absolute right-4 bottom-4 text-green-100 text-6xl"></i>
+        </div>`;
+    if(currentUser.role === 'admin') {
+      const tSnap = await getDocs(collection(db, "teachers"));
+      stats += `
+        <div class="bg-white p-6 rounded-xl shadow border-l-4 border-blue-600 relative overflow-hidden">
+          <div class="text-gray-500 text-xs font-bold uppercase">Staff</div>
+          <div class="text-3xl font-bold text-gray-800">${tSnap.size}</div>
+          <i class="fas fa-chalkboard-teacher absolute right-4 bottom-4 text-blue-100 text-6xl"></i>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow border-l-4 border-yellow-600 relative overflow-hidden">
+          <div class="text-gray-500 text-xs font-bold uppercase">Session</div>
+          <div class="text-xl font-bold text-gray-800">${currentSession}</div>
+          <i class="fas fa-calendar absolute right-4 bottom-4 text-yellow-100 text-6xl"></i>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="bg-white p-4 rounded-xl shadow"><h4 class="font-bold mb-4 text-sm text-gray-600">Student Distribution</h4><canvas id="chart-students"></canvas></div>
+        <div class="bg-white p-4 rounded-xl shadow"><h4 class="font-bold mb-4 text-sm text-gray-600">Financial Overview</h4><canvas id="chart-finance"></canvas></div>
+      </div>`;
+      setTimeout(() => {
+        new Chart(document.getElementById('chart-students'), { type: 'doughnut', data: { labels: ['Nursery', 'Primary', 'JSS', 'SS'], datasets: [{ data: [30, 50, 40, 35], backgroundColor: ['#4ade80', '#22c55e', '#16a34a', '#15803d'] }] } });
+        new Chart(document.getElementById('chart-finance'), { type: 'bar', data: { labels: ['Jan', 'Feb', 'Mar'], datasets: [{ label: 'Fees Collected', data: [120000, 190000, 30000], backgroundColor: '#d97706' }] } });
+      }, 500);
+    }
+    container.innerHTML = stats;
+  }
+
+  else if (page === 'students') {
+    title.innerText = "Student Management";
+    container.innerHTML = `
+      <div class="bg-white p-6 rounded-xl shadow fade-in">
+        <div class="flex flex-col md:flex-row justify-between gap-4 mb-6">
+          <select id="filter-class" class="border p-2 rounded bg-gray-50 w-full md:w-64 focus:ring-2 focus:ring-green-500 outline-none" onchange="renderStudents()"></select>
+          <div class="flex gap-2">
+            <button onclick="downloadIDCards()" class="bg-indigo-600 text-white px-4 py-2 rounded shadow hover:bg-indigo-700 text-sm font-bold flex items-center gap-2"><i class="fas fa-id-card"></i> IDs PDF</button>
+            <button onclick="openAddStudent()" class="bg-green-600 text-white px-4 py-2 rounded shadow hover:bg-green-700 text-sm font-bold flex items-center gap-2"><i class="fas fa-plus"></i> Add Student</button>
+          </div>
+        </div>
+        <div class="overflow-x-auto rounded border">
+          <table class="w-full text-sm text-left"><thead class="bg-gray-100 text-gray-600 font-bold"><tr><th class="p-3">Photo</th><th class="p-3">Name / ID</th><th class="p-3">Class</th><th class="p-3 text-right">Action</th></tr></thead><tbody id="student-list"></tbody></table>
+        </div>
+      </div>`;
+    populateClassSelect('filter-class', true);
+    renderStudents();
+  }
+
+  else if (page === 'academic') {
+    title.innerText = "Academic Manager";
+    container.innerHTML = `
+      <div class="bg-white rounded-xl shadow overflow-hidden fade-in">
+        <div class="flex border-b bg-gray-50">
+          <button onclick="switchTabContent('subjects')" class="flex-1 py-3 font-bold text-green-800 border-b-2 border-green-800 bg-white transition">Subjects</button>
+          <button onclick="switchTabContent('marks')" class="flex-1 py-3 font-bold text-gray-500 hover:text-green-800 transition">Marks Entry</button>
+          <button onclick="switchTabContent('timetable')" class="flex-1 py-3 font-bold text-gray-500 hover:text-green-800 transition">Timetable</button>
+        </div>
+        <div id="tab-content" class="p-6"></div>
+      </div>`;
+    switchTabContent('subjects');
+  }
+
+  else if (page === 'cbt') {
+    title.innerText = "CBT Exams";
+    container.innerHTML = `
+      <div class="bg-white p-6 rounded-xl shadow fade-in mb-6">
+        <div class="flex justify-between mb-6">
+          <h3 class="font-bold text-lg text-gray-800">Exam Manager</h3>
+          <button onclick="openCreateExam()" class="bg-green-600 text-white px-4 py-2 rounded text-sm font-bold shadow hover:bg-green-700 transition">Create New Exam</button>
+        </div>
+        <div id="exam-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+      </div>
+      <div class="bg-white p-6 rounded-xl shadow fade-in">
+        <h3 class="font-bold text-lg mb-4 text-gray-800">Exam Results Review</h3>
+        <select id="result-exam-select" class="border p-2 rounded w-full mb-4 focus:ring-2 focus:ring-green-500 outline-none" onchange="loadExamResults()"><option>Select Exam...</option></select>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm border"><thead class="bg-gray-100"><tr><th class="p-2 text-left">Student</th><th class="p-2">Score</th><th class="p-2">Time</th><th class="p-2">Review</th><th class="p-2 text-right">To Report</th></tr></thead><tbody id="result-list"></tbody></table>
+        </div>
+        <div class="mt-4 text-right">
+          <button onclick="pushAllExamResults()" class="bg-purple-600 text-white px-4 py-2 rounded text-sm font-bold hover:bg-purple-700">Push All to Reports</button>
+        </div>
+      </div>`;
+    loadExams();
+  }
+
+  else if (page === 'attendance') {
+    title.innerText = "Attendance Register";
+    container.innerHTML = `
+      <div class="bg-white p-6 rounded-xl shadow fade-in">
+        <div class="flex flex-wrap gap-4 items-end mb-6">
+          <div><label class="text-xs font-bold text-gray-500">Class</label><select id="att-class" class="border p-2 rounded w-40 bg-gray-50" onchange="loadAttendance()"></select></div>
+          <div><label class="text-xs font-bold text-gray-500">Date</label><input type="date" id="att-date" class="border p-2 rounded bg-gray-50" onchange="loadAttendance()"></div>
+          <button onclick="saveAttendance()" class="bg-green-600 text-white px-4 py-2 rounded text-sm font-bold shadow hover:bg-green-700">Save</button>
+          <button onclick="viewAttendanceHistory()" class="bg-blue-600 text-white px-4 py-2 rounded text-sm font-bold shadow hover:bg-blue-700">View History</button>
+        </div>
+        <table class="w-full text-sm border"><thead class="bg-gray-100"><tr><th class="p-2 border w-10">#</th><th class="p-2 border text-left">Name</th><th class="p-2 border text-center">Present?</th></tr></thead><tbody id="att-list"></tbody></table>
+      </div>`;
+    populateClassSelect('att-class');
+    document.getElementById('att-date').valueAsDate = new Date();
+  }
+
+  else if (page === 'reports') {
+    title.innerText = "Report Cards";
+    let content = '';
+    if (currentUser.role === 'parent' && !resultsPublished) {
+      content = `<div class="p-10 text-center bg-white rounded-xl shadow"><i class="fas fa-lock text-4xl text-gray-300 mb-4"></i><h3 class="text-xl font-bold text-gray-600">Results Not Yet Published</h3><p class="text-gray-400">Please check back later.</p></div>`;
+    } else {
+      content = `
+        <div class="bg-white p-6 rounded-xl shadow fade-in">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end mb-4">
+            ${currentUser.role !== 'parent' ? `<div><label class="text-xs font-bold text-gray-500">Class</label><select id="rep-class" class="border p-2 rounded w-full bg-gray-50"></select></div>` : ''}
+            <div><label class="text-xs font-bold text-gray-500">Session History</label><select id="rep-session" class="border p-2 rounded w-full bg-gray-50"><option value="${currentSession}">${currentSession} (Current)</option><option value="2024/2025">2024/2025</option></select></div>
+            ${currentUser.role !== 'parent' ? `<div><label class="text-xs font-bold text-gray-500">Next Term Begins</label><input type="date" id="rep-next-date" class="border p-2 rounded w-full bg-gray-50"></div>` : ''}
+            <button onclick="downloadReportPDF()" class="bg-green-800 text-white px-4 py-2 rounded font-bold shadow h-10 hover:bg-green-900 transition flex items-center justify-center gap-2"><i class="fas fa-file-pdf"></i> Download PDF</button>
+          </div>
+          ${currentUser.role === 'admin' || currentUser.role === 'teacher' ? `<button onclick="togglePublishResults()" class="bg-blue-600 text-white px-4 py-2 rounded shadow text-sm font-bold mb-4 w-full hover:bg-blue-700">${resultsPublished ? 'Unpublish Results' : 'Send Results to Parents'}</button>` : ''}
+          <div id="report-preview" class="p-4 bg-gray-50 rounded border min-h-[200px] text-center text-gray-500 italic flex items-center justify-center">Select options to generate previews</div>
+        </div>`;
+    }
+    container.innerHTML = content;
+    if(currentUser.role !== 'parent') populateClassSelect('rep-class');
+  }
+
+  else if (page === 'classRecord') {
+    title.innerText = "Class Record";
+    container.innerHTML = `
+      <div class="bg-white p-6 rounded-xl shadow fade-in">
+        <div class="flex gap-4 items-end mb-6">
+          <div><label class="text-xs font-bold text-gray-500">Class</label><select id="record-class" class="border p-2 rounded w-64 bg-gray-50" onchange="loadClassRecord()"></select></div>
+          <div><label class="text-xs font-bold text-gray-500">Session</label><select id="record-session" class="border p-2 rounded w-40 bg-gray-50"><option value="${currentSession}">${currentSession}</option></select></div>
+          <button onclick="printClassRecord()" class="bg-green-600 text-white px-4 py-2 rounded shadow hover:bg-green-700 text-sm font-bold">Print PDF (Landscape)</button>
+        </div>
+        <div id="class-record-container" class="overflow-x-auto"></div>
+      </div>`;
+    populateClassSelect('record-class');
+    document.getElementById('record-session').value = currentSession;
+    loadClassRecord();
+  }
+
+  else if (page === 'payments') {
+    title.innerText = "Payment Records";
+    container.innerHTML = `
+      <div class="bg-white p-6 rounded-xl shadow fade-in">
+        <h3 class="font-bold text-lg mb-4 text-green-800">My Child's Payments</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm border-collapse"><thead class="bg-green-50 text-green-800"><tr><th class="p-3 text-left">Date</th><th class="p-3 text-left">Receipt No</th><th class="p-3 text-left">Purpose</th><th class="p-3 font-bold text-right">Amount</th><th class="p-3 text-center">Action</th></tr></thead><tbody id="parent-payment-list"></tbody></table>
+        </div>
+      </div>`;
+    loadParentPayments();
+  }
+
+  else if (page === 'finance') {
+    title.innerText = "Finance";
+    container.innerHTML = `
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 fade-in">
+        <div class="bg-white p-6 rounded-xl shadow">
+          <h3 class="font-bold text-lg mb-4 text-green-800">Generate Receipt</h3>
+          <form onsubmit="generateReceipt(event)" class="space-y-4">
+            <select id="fin-class" class="border p-2 rounded w-full bg-gray-50" onchange="loadStudentsForFinance()" required></select>
+            <select id="fin-student" class="border p-2 rounded w-full bg-gray-50" required><option>Select Student</option></select>
+            <input type="number" id="fin-amount" class="border p-2 rounded w-full bg-gray-50" placeholder="Amount (N)" required>
+            <input type="text" id="fin-purpose" class="border p-2 rounded w-full bg-gray-50" placeholder="Purpose (e.g. School Fees)" required>
+            <input type="date" id="fin-date" class="border p-2 rounded w-full bg-gray-50" required>
+            <button type="submit" class="w-full bg-yellow-600 text-white font-bold py-2 rounded shadow hover:bg-yellow-700">Generate Receipt</button>
+          </form>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="font-bold text-lg">History</h3>
+            <input type="text" id="receipt-search" onkeyup="filterReceipts()" placeholder="Search Receipt No..." class="border p-1 rounded text-sm w-32 bg-gray-50">
+          </div>
+          <div class="overflow-y-auto h-80 custom-scrollbar">
+            <table class="w-full text-sm"><tbody id="receipt-list"></tbody></table>
+          </div>
+        </div>
+      </div>`;
+    populateClassSelect('fin-class');
+    loadReceipts();
+  }
+
+  else if (page === 'settings') {
+    title.innerText = "System Settings";
+    const settingsDoc = await getDoc(doc(db, "settings", "general"));
+    const regOpen = settingsDoc.exists() ? settingsDoc.data().registrationOpen : true;
+    const regMsg = settingsDoc.exists() ? settingsDoc.data().registrationMessage || '' : '';
+    container.innerHTML = `
+      <div class="bg-white p-6 rounded-xl shadow max-w-lg fade-in">
+        <div class="space-y-6">
+          <div><label class="text-xs font-bold text-gray-500">Current Session</label><input type="text" id="set-session" value="${currentSession}" class="border p-2 rounded w-full bg-gray-50"></div>
+          <div><label class="text-xs font-bold text-gray-500">Current Term</label><select id="set-term" class="border p-2 rounded w-full bg-gray-50"><option>1st Term</option><option>2nd Term</option><option>3rd Term</option></select></div>
+          <div class="border-t pt-4">
+            <h4 class="font-bold text-gray-700 mb-2">Registration Control</h4>
+            <div class="flex items-center gap-4 mb-2">
+              <label class="flex items-center gap-2"><input type="radio" name="regStatus" value="open" ${regOpen ? 'checked' : ''}> Open</label>
+              <label class="flex items-center gap-2"><input type="radio" name="regStatus" value="closed" ${!regOpen ? 'checked' : ''}> Closed</label>
+            </div>
+            <div><label class="text-xs font-bold text-gray-500">Message for Applicants</label><textarea id="reg-message-admin" class="border p-2 rounded w-full" rows="2">${regMsg}</textarea></div>
+          </div>
+          <div class="p-4 bg-yellow-50 border border-yellow-200 rounded">
+            <h4 class="font-bold text-yellow-800 text-sm mb-2">Class Promotion Actions</h4>
+            <div class="flex gap-2">
+              <button onclick="promoteStudents(true)" class="flex-1 bg-green-600 text-white py-2 rounded text-xs font-bold hover:bg-green-700 shadow">Promote Students</button>
+              <button onclick="promoteStudents(false)" class="flex-1 bg-red-600 text-white py-2 rounded text-xs font-bold hover:bg-red-700 shadow">Demote Students</button>
+            </div>
+          </div>
+          <button onclick="updateSettings()" class="bg-blue-600 text-white px-4 py-3 rounded font-bold w-full shadow hover:bg-blue-700">Update System Configuration</button>
+        </div>
+      </div>`;
+    document.getElementById('set-term').value = currentTerm;
+  }
+
+  else if (page === 'chat') {
+    title.innerText = "Communication";
+    container.innerHTML = `<div class="bg-white rounded-xl shadow h-[600px] flex flex-col fade-in"><div class="p-4 border-b bg-gray-50 font-bold text-gray-700 flex items-center gap-2"><i class="fas fa-comments text-green-600"></i> School Chat</div><div id="chat-box" class="flex-1 overflow-y-auto p-4 space-y-4 bg-white"></div><div class="p-4 border-t flex gap-2 bg-gray-50"><input type="text" id="chat-msg" class="flex-1 border p-2 rounded outline-none focus:border-green-500 bg-white" placeholder="Type message..."><button onclick="sendChat()" class="bg-blue-600 text-white px-6 py-2 rounded shadow hover:bg-blue-700"><i class="fas fa-paper-plane"></i></button></div></div>`;
+    loadChat();
+  }
+
+  else if (page === 'teachers') {
+    title.innerText = "Staff Management";
+    container.innerHTML = `<div class="bg-white p-6 rounded-xl shadow fade-in"><div class="flex justify-between mb-6"><h3 class="font-bold text-lg">Teachers List</h3><button onclick="openAddTeacher()" class="bg-green-600 text-white px-4 py-2 rounded text-sm font-bold shadow hover:bg-green-700">Add Teacher</button></div><div id="teacher-list" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div></div>`;
+    renderTeachers();
+  }
+
+  else if (page === 'applications') {
+    title.innerText = "Admission Applications";
+    container.innerHTML = `
+      <div class="bg-white p-6 rounded-xl shadow fade-in">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="font-bold text-lg">New Student Applications</h3>
+          <select id="app-filter-class" class="border p-2 rounded bg-gray-50" onchange="loadApplications()">
+            <option value="">All Classes</option>
+          </select>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm border-collapse">
+            <thead class="bg-green-50 text-green-800">
+              <tr><th class="p-3 text-left">App No</th><th class="p-3 text-left">Name</th><th class="p-3 text-left">Class</th><th class="p-3 text-left">DOB</th><th class="p-3 text-left">Status</th><th class="p-3 text-left">Action</th></tr>
+            </thead>
+            <tbody id="applications-list"></tbody>
+          </table>
+        </div>
+      </div>`;
+    const filter = document.getElementById('app-filter-class');
+    classes.forEach(c => { const opt = document.createElement('option'); opt.value = c; opt.innerText = c; filter.appendChild(opt); });
+    loadApplications();
+  }
+
+  else if (page === 'broadcasts') {
+    title.innerText = "Broadcast Manager";
+    container.innerHTML = `
+      <div class="bg-white p-6 rounded-xl shadow fade-in">
+        <div class="mb-4">
+          <h3 class="font-bold text-lg mb-2">Send New Broadcast</h3>
+          <div class="flex flex-wrap gap-2 mb-2">
+            <select id="broad-target" class="border p-2 rounded flex-1 text-sm">
+              <option value="all">All Users</option>
+              <option value="parents">Parents Only</option>
+              <option value="teachers">Teachers Only</option>
+              <option value="individual">Individual</option>
+            </select>
+            <input type="text" id="broad-individual" placeholder="User ID/Email" class="border p-2 rounded text-sm w-48 hidden">
+          </div>
+          <textarea id="broad-message" rows="3" class="w-full border p-2 rounded text-sm" placeholder="Broadcast message..."></textarea>
+          <button onclick="sendBroadcastFromPage()" class="mt-2 bg-green-600 text-white px-4 py-2 rounded text-sm font-bold hover:bg-green-700">Send Broadcast</button>
+        </div>
+        <div>
+          <h4 class="font-bold text-md mb-2">Past Broadcasts</h4>
+          <div id="past-broadcasts" class="space-y-2 max-h-96 overflow-y-auto"></div>
+        </div>
+      </div>`;
+    loadPastBroadcasts();
+  }
+
+  else if (page === 'timetableParent') {
+    title.innerText = "Class Timetable";
+    const childClass = currentUser.child.class;
+    container.innerHTML = `<div class="bg-white p-6 rounded-xl shadow fade-in"><h3 class="font-bold text-lg mb-4">Timetable for ${childClass}</h3><div id="parent-timetable-container" class="overflow-x-auto"></div></div>`;
+    loadParentTimetable(childClass);
+  }
+};
+
+// --- DATA LOGIC ---
+
+window.togglePublishResults = async () => {
+  resultsPublished = !resultsPublished;
+  await setDoc(doc(db, "settings", "general"), { published: resultsPublished }, { merge: true });
+  showToast(`Results ${resultsPublished ? 'Published' : 'Hidden'}`);
+  loadPage('reports');
+};
+
+window.downloadReportPDF = async () => {
+  const cls = currentUser.role === 'parent' ? currentUser.child.class : document.getElementById('rep-class').value;
+  const sess = document.getElementById('rep-session').value;
+  const nextTerm = currentUser.role === 'parent' ? '' : (document.getElementById('rep-next-date').value || "...........");
+  let q = collection(db, "students");
+  if(currentUser.role === 'parent') q = query(q, where("studentId", "==", currentUser.child.studentId));
+  else q = query(q, where("class", "==", cls));
+  const sSnap = await getDocs(q);
+  const students = []; sSnap.forEach(d => students.push({id: d.id, ...d.data()}));
+  if(students.length === 0) return showToast("No students", "error");
+  const scoreSnap = await getDocs(query(collection(db, "scores"), where("session", "==", sess), where("term", "==", currentTerm)));
+  const allScores = []; scoreSnap.forEach(d => allScores.push(d.data()));
+  const subSnap = await getDocs(query(collection(db, "subjects"), where("class", "==", cls)));
+  const subjects = {}; subSnap.forEach(d => subjects[d.id] = d.data().name);
+  students.forEach(s => {
+    const sScores = allScores.filter(sc => sc.studentId === s.id);
+    let total = 0, count = 0;
+    for(const sid in subjects) {
+      const sc = sScores.find(x => x.subjectId === sid) || {ca:0, exam:0};
+      total += (Number(sc.ca)||0) + (Number(sc.exam)||0);
+      if(sScores.find(x => x.subjectId === sid)) count++;
+    }
+    s.avg = count ? (total/count).toFixed(2) : 0;
+    s.totalScore = total;
+  });
+  students.sort((a,b) => b.totalScore - a.totalScore);
+  const pdfContainer = document.createElement('div');
+  students.forEach((s) => {
+    const sScores = allScores.filter(sc => sc.studentId === s.id);
+    let rows = '';
+    for(const [sid, sname] of Object.entries(subjects)) {
+      const sc = sScores.find(x => x.subjectId === sid) || {ca:0, exam:0};
+      const sum = (Number(sc.ca)||0) + (Number(sc.exam)||0);
+      let grade = 'F';
+      if(sum >= 70) grade = 'A';
+      else if(sum >= 60) grade = 'B';
+      else if(sum >= 50) grade = 'C';
+      else if(sum >= 40) grade = 'D';
+      const color = grade === 'A' ? 'green' : grade === 'F' ? 'red' : 'black';
+      rows += `<tr style="border-bottom:1px solid #e5e7eb;"><td style="padding:8px; border-right:1px solid #e5e7eb; font-weight:600;">${sname}</td><td style="text-align:center; border-right:1px solid #e5e7eb;">${sc.ca||'-'}</td><td style="text-align:center; border-right:1px solid #e5e7eb;">${sc.exam||'-'}</td><td style="text-align:center; font-weight:bold; border-right:1px solid #e5e7eb;">${sum}</td><td style="text-align:center; font-weight:bold; color:${color}">${grade}</td></tr>`;
+    }
+    let resultClass = "Fail";
+    if(s.avg >= 70) resultClass = "Distinction";
+    else if(s.avg >= 60) resultClass = "Merit";
+    else if(s.avg >= 50) resultClass = "Credit";
+    else if(s.avg >= 40) resultClass = "Pass";
+    const remark = s.avg >= 70 ? "Excellent Performance. Keep it up!" : s.avg >= 50 ? "A good result." : "Poor performance. Advised to sit up.";
+    const page = document.createElement('div');
+    page.className = 'report-card-design';
+    page.innerHTML = `
+      <div class="report-watermark">TASIU ADAMU</div>
+      <div style="text-align: center; border-bottom: 3px double #064e3b; padding-bottom: 15px; margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <img src="${s.photo || 'https://via.placeholder.com/150'}" style="width: 100px; height: 100px; border: 3px solid #d97706; object-fit: cover; border-radius: 10px;" onerror="this.src='https://via.placeholder.com/150'">
+          <div style="text-align: center;">
+            <h1 style="font-family: 'Amiri', serif; font-size: 26px; color: #064e3b; margin:0;" dir="rtl">كلية تاسع آدم المجتمع للعلوم والقرآن الكريم -- غارو</h1>
+            <h2 style="font-family: 'Cinzel', serif; font-size: 20px; font-weight: bold; color: #064e3b; margin: 5px 0;">TASIU ADAMU COMMUNITY COLLEGE<br>OF SCIENCE AND QUR'ANIC STUDIES</h2>
+            <p style="font-size: 11px; font-weight: bold; color: #d97706; text-transform: uppercase;">Motto: Knowledge is Power</p>
+            <p style="font-size: 10px;">Address: Gwarzo Road, Sabuwar Kasuwa Garo, Kabo LGA, Kano State</p>
+            <p style="font-size: 10px;">GSM: 09063121276, 08033471719</p>
+          </div>
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=VERIFY:${s.studentId}" style="width: 100px; height: 100px; border: 2px solid #000;">
+        </div>
+      </div>
+      <div style="background: #f0fdf4; border: 1px solid #064e3b; padding: 15px; margin-bottom: 20px; border-radius: 8px;">
+        <table style="width: 100%; font-size: 14px;">
+          <tr><td><strong>Name:</strong> ${s.name.toUpperCase()}</td><td><strong>Session:</strong> ${sess}</td><td><strong>Term:</strong> ${currentTerm}</td></tr>
+          <tr><td><strong>Class:</strong> ${s.class}</td><td><strong>No. in Class:</strong> ${students.length}</td><td><strong>Class of Result:</strong> ${resultClass}</td></tr>
+        </table>
+      </div>
+      <table style="width: 100%; font-size: 13px; border-collapse: collapse; border: 2px solid #064e3b;">
+        <thead><tr style="background: #064e3b; color: white; text-transform: uppercase;"><th style="padding: 10px; text-align: left;">Subject</th><th style="padding: 10px; width: 50px;">CA</th><th style="padding: 10px; width: 50px;">Exam</th><th style="padding: 10px; width: 60px;">Total</th><th style="padding: 10px; width: 50px;">Grade</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <div style="margin-top: 10px; display: flex; gap: 10px;">
+        <div style="flex: 1; border: 1px solid #ccc; padding: 10px; font-size: 10px; background: #fff;">
+          <strong>GRADE KEYS:</strong><br>A (70-100) - Excellent<br>B (60-69) - Very Good<br>C (50-59) - Credit<br>D (40-49) - Pass<br>F (0-39) - Fail
+        </div>
+        <div style="flex: 1; border: 1px solid #ccc; padding: 10px; font-size: 12px; background: #fff; text-align: center;">
+          <strong>TERM AVERAGE</strong><br><span style="font-size: 24px; font-weight: bold; color: #064e3b;">${s.avg}</span>
+        </div>
+      </div>
+      <div style="margin-top: 30px; display: flex; justify-content: space-between; align-items: flex-end;">
+        <div style="width: 65%; font-size: 13px;">
+          <p style="border-bottom: 1px dotted #000; padding-bottom: 5px; margin-bottom: 15px;"><strong>Principal's Remark:</strong> <span style="font-family: 'Courier Prime'; color: #000;">${remark}</span></p>
+          ${nextTerm ? `<p><strong>Next Term Begins:</strong> ${nextTerm}</p>` : ''}
+        </div>
+        <div style="width: 30%; text-align: center; position: relative;">
+          <div class="stamp-box" style="right: 20px; bottom: 30px;"><div class="stamp-text-sm">TASIU ADAMU</div><div class="stamp-text-lg">APPROVED</div><div class="stamp-text-sm">COLLEGE</div></div>
+          <div style="border-bottom: 2px solid #064e3b; margin-bottom: 5px;"></div><strong>Principal's Signature</strong>
+        </div>
+      </div>
+      <div style="position: absolute; bottom: 5mm; width: 100%; text-align: center; font-size: 9px; color: #999; border-top: 1px solid #eee; padding-top: 5px;">Developed by Abu-Abdurrahman CodeVerge Technology</div>
+    `;
+    pdfContainer.appendChild(page);
+  });
+  const zone = document.getElementById('pdf-render-zone');
+  zone.innerHTML = '';
+  zone.appendChild(pdfContainer);
+  if(currentUser.role === 'parent') {
+    await addDoc(collection(db, "activities"), { user: currentUser.name, role: 'parent', action: "Downloaded Report Card", timestamp: new Date() });
+  }
+  html2pdf().from(pdfContainer).set({
+    margin: 0, filename: 'Student_Report_Cards.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  }).save().then(() => zone.innerHTML = '');
+};
+
+// NEW ID CARD DESIGN – front & back
+window.downloadIDCards = async () => {
+  const cls = document.getElementById('filter-class').value;
+  if(!cls && currentUser.role === 'admin') return showToast("Select a class first", "error");
+  let q = query(collection(db, "students"), where("class", "==", cls || currentUser.assignedClass));
+  const snap = await getDocs(q);
+  let content = document.createElement('div');
+  content.style.display = 'flex'; content.style.flexWrap = 'wrap'; content.style.gap = '10px'; content.style.padding = '20px';
+  snap.forEach(d => {
+    const s = d.data();
+    const cardContainer = document.createElement('div');
+    cardContainer.className = 'id-card-container';
+    cardContainer.innerHTML = `
+      <div class="id-card-front">
+        <div class="id-card-pattern"></div>
+        <div style="position: relative; z-index: 10; text-align: center;">
+          <div style="font-family: 'Amiri'; font-size: 12px; color: #fbbf24; margin-top: 5px;">كلية تاسع آدم المجتمع</div>
+          <div style="font-size: 10px; font-weight: bold;">TASIU ADAMU COMMUNITY COLLEGE</div>
+          <img src="${s.photo || 'https://via.placeholder.com/150'}" class="id-photo" onerror="this.src='https://via.placeholder.com/150'">
+          <div style="font-size: 16px; font-weight: bold; text-transform: uppercase;">${s.name}</div>
+          <div style="background: rgba(255,255,255,0.2); border-radius: 4px; padding: 2px 8px; display: inline-block; font-size: 12px; font-weight: bold; margin: 5px 0;">${s.studentId}</div>
+          <div style="font-size: 12px; color: #fbbf24; font-weight: bold;">${s.class}</div>
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${s.studentId}" style="width: 60px; height: 60px; margin: 10px auto; background: white; padding: 2px;">
+        </div>
+      </div>
+      <div class="id-card-back">
+        <div class="id-card-pattern"></div>
+        <div style="position: relative; z-index: 10; padding: 10px; text-align: center;">
+          <div style="font-family: 'Cinzel'; font-size: 14px; color: #fbbf24;">TASIU ADAMU</div>
+          <div style="font-size: 10px; margin-top: 10px;">Gwarzo Road, Sabuwar Kasuwa Garo, Kabo LGA, Kano State</div>
+          <div style="font-size: 10px;">📞 09063121276, 08033471719</div>
+          <div style="margin-top: 20px; font-size: 8px;">This card is property of the school. If found, please return.</div>
+          <div style="margin-top: 20px; border-top: 1px dashed #fbbf24; padding-top: 10px;">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=VERIFY:${s.studentId}" style="width: 50px; height: 50px;">
+          </div>
+        </div>
+      </div>
+    `;
+    content.appendChild(cardContainer);
+  });
+  const zone = document.getElementById('pdf-render-zone');
+  zone.innerHTML = '';
+  zone.appendChild(content);
+  html2pdf().from(content).set({
+    margin: 5, filename: 'ID_Cards.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true },
+    jsPDF: { unit: 'in', format: [2.125, 3.37], orientation: 'portrait' }
+  }).save().then(() => zone.innerHTML = '');
+};
+
+// RECEIPTS
+window.loadStudentsForFinance = async () => {
+  const cls = document.getElementById('fin-class').value;
+  const s = document.getElementById('fin-student');
+  s.innerHTML = '<option>Select Student</option>';
+  const snap = await getDocs(query(collection(db, "students"), where("class", "==", cls)));
+  snap.forEach(d => { const o = document.createElement('option'); o.value = d.data().name; o.innerText = d.data().name; s.appendChild(o); });
+};
+
+window.generateReceipt = async (e) => {
+  e.preventDefault();
+  const name = document.getElementById('fin-student').value;
+  const amount = document.getElementById('fin-amount').value;
+  const purpose = document.getElementById('fin-purpose').value;
+  const date = document.getElementById('fin-date').value;
+  const cls = document.getElementById('fin-class').value;
+  if(!name || !amount || !purpose || !date || !cls) return showToast('All fields required', 'error');
+  const receiptNo = `RCPT/${new Date().getFullYear()}/${Math.floor(1000+Math.random()*9000)}`;
+  const receiptData = { name, amount, purpose, date, no: receiptNo, class: cls, timestamp: new Date() };
+  await addDoc(collection(db, "payments"), receiptData);
+  showToast('Receipt generated');
+  loadReceipts();
+  downloadReceiptPDF(receiptData);
+};
+
+window.loadReceipts = async () => {
+  const list = document.getElementById('receipt-list');
+  const snap = await getDocs(query(collection(db, "payments"), orderBy("timestamp", "desc")));
+  list.innerHTML = '';
+  snap.forEach(d => {
+    const r = d.data();
+    const safe = JSON.stringify(r).replace(/"/g, '&quot;');
+    list.innerHTML += `<tr class="border-b"><td class="p-2 text-xs">${r.date}</td><td class="p-2 text-xs font-mono">${r.no}</td><td class="p-2 text-xs">${r.name}</td><td class="p-2 text-xs font-bold text-green-700">₦${r.amount}</td><td class="p-2 text-center"><button onclick="downloadReceiptPDF(${safe})" class="text-blue-600"><i class="fas fa-download"></i></button></td></tr>`;
+  });
+};
+
+window.filterReceipts = () => {
+  const search = document.getElementById('receipt-search').value.toLowerCase();
+  const rows = document.querySelectorAll('#receipt-list tr');
+  rows.forEach(r => { const text = r.innerText.toLowerCase(); r.style.display = text.includes(search) ? '' : 'none'; });
+};
+
+window.downloadReceiptPDF = (data) => {
+  const el = document.createElement('div');
+  el.className = 'receipt-design';
+  el.innerHTML = `
+    <div style="text-align: center; border-bottom: 2px dashed #ccc; padding-bottom: 10px; margin-bottom: 10px;">
+      <div style="font-family: 'Amiri'; font-size: 12px; color: #064e3b;" dir="rtl">كلية تاسع آدم المجتمع</div>
+      <div style="font-weight: bold; font-size: 10px; color: #064e3b;">TASIU ADAMU COMMUNITY COLLEGE</div>
+      <div style="font-size: 8px; margin-top: 2px;">Gwarzo Road, Garo, Kano State</div>
+    </div>
+    <div style="text-align: center; font-weight: bold; text-transform: uppercase; font-size: 12px; margin: 10px 0; border: 1px solid #000; padding: 2px;">Payment Receipt</div>
+    <div style="font-size: 10px; line-height: 1.6;">
+      <div style="display: flex; justify-content: space-between;"><span>Date:</span> <strong>${data.date}</strong></div>
+      <div style="display: flex; justify-content: space-between;"><span>Receipt No:</span> <strong>${data.no}</strong></div>
+      <div style="border-bottom: 1px dotted #ccc; margin: 5px 0;"></div>
+      <div><strong>Received From:</strong><br>${data.name} (${data.class})</div>
+      <div style="margin-top: 5px;"><strong>Payment For:</strong><br>${data.purpose}</div>
+    </div>
+    <div style="margin: 15px 0; border: 2px solid #064e3b; padding: 8px; text-align: center; font-weight: bold; font-size: 16px; background: #f0fdf4;">₦${Number(data.amount).toLocaleString()}</div>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${data.no}" style="width: 40px; height: 40px;">
+      <div style="text-align: center; font-size: 8px;"><p>Authorized Signature</p><div style="height: 1px; background: #000; width: 60px; margin: 20px auto 2px;"></div><p>Bursary Dept.</p></div>
+    </div>
+    <div style="text-align: center; font-size: 7px; margin-top: 10px; color: #999;">Powered by CodeVerge</div>
+  `;
+  const zone = document.getElementById('pdf-render-zone');
+  zone.innerHTML = '';
+  zone.appendChild(el);
+  html2pdf().from(el).set({
+    margin: 0, filename: `Receipt_${data.no}.pdf`,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true },
+    jsPDF: { unit: 'mm', format: [80, 120], orientation: 'portrait' }
+  }).save().then(() => zone.innerHTML = '');
+};
+
+window.loadParentPayments = async () => {
+  const list = document.getElementById('parent-payment-list');
+  list.innerHTML = '<tr><td colspan="5" class="p-4 text-center">Loading...</td></tr>';
+  const q = query(collection(db, "payments"), where("name", "==", currentUser.child.name), orderBy("timestamp", "desc"));
+  const snap = await getDocs(q);
+  list.innerHTML = '';
+  if(snap.empty) { list.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-gray-500">No payment records found.</td></tr>'; return; }
+  snap.forEach(d => {
+    const p = d.data();
+    const safe = JSON.stringify(p).replace(/"/g, '&quot;');
+    list.innerHTML += `<tr class="border-b hover:bg-green-50"><td class="p-3 text-xs">${p.date}</td><td class="p-3 text-xs font-mono">${p.no}</td><td class="p-3 text-xs">${p.purpose}</td><td class="p-3 font-bold text-green-700 text-right">₦${p.amount}</td><td class="p-3 text-center"><button onclick="downloadReceiptPDF(${safe})" class="text-blue-600 hover:text-blue-800"><i class="fas fa-download"></i></button></td></tr>`;
+  });
+};
+
+// ATTENDANCE & TIMETABLE
+window.viewAttendanceHistory = async () => {
+  const cls = document.getElementById('att-class').value;
+  if(!cls) return showToast("Select a class", "error");
+  const m = document.getElementById('generic-modal');
+  document.getElementById('modal-title').innerText = `Attendance Log: ${cls}`;
+  let html = '<div class="space-y-2">';
+  const today = new Date();
+  for(let i=0; i<7; i++) {
+    const d = new Date(today); d.setDate(today.getDate() - i);
+    const dateStr = d.toISOString().split('T')[0];
+    html += `<div class="flex justify-between p-3 bg-gray-50 rounded border"><span class="font-bold text-gray-700">${dateStr}</span> <button onclick="loadAttendanceForDate('${cls}', '${dateStr}')" class="text-blue-600 text-xs font-bold">View/Edit</button></div>`;
+  }
+  html += '</div>';
+  document.getElementById('modal-body').innerHTML = html;
+  m.classList.remove('hidden');
+};
+window.loadAttendanceForDate = (cls, date) => {
+  document.getElementById('att-class').value = cls;
+  document.getElementById('att-date').value = date;
+  closeModal('generic-modal');
+  loadAttendance();
+};
+window.renderTTGrid = () => {
+  let h = `<thead class="bg-green-900 text-white"><tr><th class="p-3 border border-green-700 uppercase text-xs">Time / Day</th>`;
+  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+  days.forEach(d => h += `<th class="p-3 border border-green-700 uppercase text-xs w-1/5">${d}</th>`);
+  h += `</tr></thead><tbody>`;
+  const times = ["8:00 - 8:40", "8:40 - 9:20", "9:20 - 10:00", "10:00 - 10:30 (Break)", "10:30 - 11:10", "11:10 - 11:50"];
+  times.forEach(t => {
+    h += `<tr class="hover:bg-green-50"><td class="p-2 border border-green-200 text-xs font-bold bg-green-100 text-center">${t}</td>`;
+    days.forEach(() => h += `<td class="p-2 border border-green-200 text-center text-xs outline-none focus:bg-yellow-50" contenteditable="true"></td>`);
+    h += `</tr>`;
+  });
+  h += `</tbody>`;
+  document.getElementById('tt-grid').innerHTML = h;
+};
+
+window.populateClassSelect = (id, allOption=false, publicPage=false) => {
+  const s = document.getElementById(id);
+  if(!s) return;
+  s.innerHTML = allOption ? '<option value="">All Classes</option>' : '<option value="">Select Class</option>';
+  classes.forEach(c => {
+    if (!publicPage && currentUser && currentUser.role === 'teacher' && currentUser.assignedClass !== c && !allOption) return;
+    const opt = document.createElement('option'); opt.value = c; opt.innerText = c; s.appendChild(opt);
+  });
+  if(!publicPage && currentUser && currentUser.role === 'teacher' && !allOption) { s.value = currentUser.assignedClass; s.dispatchEvent(new Event('change')); }
+};
+
+window.renderStudents = async () => {
+  const cls = document.getElementById('filter-class').value;
+  const list = document.getElementById('student-list');
+  list.innerHTML = '<tr><td colspan="4" class="p-4 text-center"><div class="loader mx-auto"></div></td></tr>';
+  let q = collection(db, "students");
+  if(currentUser.role === 'teacher') q = query(q, where("class", "==", currentUser.assignedClass));
+  else if(cls) q = query(q, where("class", "==", cls));
+  onSnapshot(q, (snap) => {
+    list.innerHTML = '';
+    snap.forEach(d => {
+      const s = d.data();
+      const safe = JSON.stringify({id: d.id, ...s}).replace(/"/g, '&quot;');
+      list.innerHTML += `<tr class="border-b hover:bg-gray-50 transition"><td class="p-3"><img src="${s.photo||'https://via.placeholder.com/40'}" class="w-10 h-10 rounded-full object-cover border border-gray-200" onerror="this.src='https://via.placeholder.com/40'"></td><td class="p-3 font-bold text-gray-800">${s.name}<br><span class="text-xs text-gray-500 font-mono bg-gray-100 px-1 rounded">${s.studentId}</span></td><td class="p-3"><span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-bold">${s.class}</span></td><td class="p-3 text-right"><button onclick="editStudent(${safe})" class="text-blue-600 p-2 hover:bg-blue-50 rounded"><i class="fas fa-edit"></i></button>${currentUser.role === 'admin' ? `<button onclick="deleteStudent('${d.id}')" class="text-red-600 p-2 hover:bg-red-50 rounded"><i class="fas fa-trash"></i></button>` : ''}</td></tr>`;
+    });
+  });
+};
+
+window.openAddStudent = () => {
+  const m=document.getElementById('generic-modal');
+  document.getElementById('modal-title').innerText="Add Student";
+  document.getElementById('modal-body').innerHTML=`<form onsubmit="saveStudent(event)" class="space-y-4"><input type="hidden" id="st-id"><input type="text" id="st-name" class="border p-2 rounded w-full bg-gray-50" placeholder="Full Name" required><select id="st-class" class="border p-2 rounded w-full bg-gray-50" required></select><div class="border p-2 rounded bg-gray-50"><label class="text-xs font-bold text-gray-500 block mb-1">Passport Photo</label><input type="file" id="st-photo" class="w-full text-sm"></div><button type="submit" class="bg-green-600 text-white w-full py-2 rounded font-bold hover:bg-green-700 shadow">Save Student</button></form>`;
+  populateClassSelect('st-class'); m.classList.remove('hidden');
+};
+window.saveStudent = async(e)=>{
+  e.preventDefault();
+  const id=document.getElementById('st-id').value,name=document.getElementById('st-name').value,cls=document.getElementById('st-class').value,file=document.getElementById('st-photo').files[0];
+  let data={name,class:cls};
+  if(!id)data.studentId=`TACC/${new Date().getFullYear()}/${Math.floor(1000+Math.random()*9000)}`;
+  if(file)data.photo=await fileToBase64(file);
+  if(id)await updateDoc(doc(db,"students",id),data);
+  else{await addDoc(collection(db,"students"),data);await addActivity(`Added student: ${name}`);}
+  closeModal('generic-modal');showToast('Student Saved');
+};
+window.editStudent=(s)=>{openAddStudent();document.getElementById('st-id').value=s.id;document.getElementById('st-name').value=s.name;document.getElementById('st-class').value=s.class;};
+window.deleteStudent=async(id)=>{if(confirm("Delete?")){await deleteDoc(doc(db,"students",id));showToast("Deleted");}};
+
+window.switchTabContent = (tab) => {
+  const c=document.getElementById('tab-content');
+  if(tab==='subjects'){c.innerHTML=`<div class="flex gap-2 mb-4"><select id="sub-class" class="border p-2 rounded bg-gray-50" onchange="loadSubjects()"></select><input type="text" id="sub-name" placeholder="Subject Name" class="border p-2 rounded flex-1 bg-gray-50"><button onclick="addSubject()" class="bg-green-600 text-white px-4 py-2 rounded">Add</button></div><ul id="subject-list" class="grid grid-cols-2 gap-2"></ul>`;populateClassSelect('sub-class');if(currentUser.role==='teacher')loadSubjects();}
+  else if(tab==='marks'){c.innerHTML=`<div class="flex flex-col md:flex-row gap-4 mb-4 items-center"><select id="mark-class" class="border p-2 rounded w-full bg-gray-50" onchange="loadMarkSubjects()"></select><select id="mark-sub" class="border p-2 rounded w-full bg-gray-50" onchange="loadMarks()"><option>Subject...</option></select><button onclick="toggleMarkInputType()" id="mark-toggle-btn" class="bg-blue-100 text-blue-700 px-3 py-2 rounded text-xs font-bold whitespace-nowrap">Switch to CBT Import</button></div><div class="overflow-x-auto"><table class="w-full text-sm border"><thead class="bg-gray-100"><tr><th>Student</th><th class="w-20">CA (40)</th><th class="w-20">Exam (60)</th><th>Total</th></tr></thead><tbody id="mark-list"></tbody></table></div>`;populateClassSelect('mark-class');if(currentUser.role==='teacher')setTimeout(loadMarkSubjects,500);}
+  else if(tab==='timetable'){c.innerHTML=`<div class="flex justify-between mb-4"><select id="tt-class" class="border p-2 rounded bg-gray-50" onchange="loadTimetable()"></select><button onclick="saveTimetable()" class="bg-green-600 text-white px-3 py-1 rounded shadow ml-2">Save</button></div><div class="overflow-x-auto"><table id="tt-grid" class="w-full text-sm border-collapse border border-gray-400"></table></div>`;populateClassSelect('tt-class');if(currentUser.role==='teacher')setTimeout(loadTimetable,500);}
+};
+window.addSubject=async()=>{const c=document.getElementById('sub-class').value,n=document.getElementById('sub-name').value;if(c&&n){await addDoc(collection(db,"subjects"),{class:c,name:n});loadSubjects();document.getElementById('sub-name').value='';}};
+window.loadSubjects=async()=>{const c=document.getElementById('sub-class').value;if(!c)return;onSnapshot(query(collection(db,"subjects"),where("class","==",c)),(s)=>{let h='';s.forEach(d=>h+=`<li class="bg-gray-50 p-2 rounded border flex justify-between text-sm items-center">${d.data().name} <button onclick="deleteSubject('${d.id}')" class="text-red-500 hover:bg-red-50 p-1"><i class="fas fa-times"></i></button></li>`);document.getElementById('subject-list').innerHTML=h;});};
+window.deleteSubject=async(id)=>await deleteDoc(doc(db,"subjects",id));
+window.loadMarkSubjects=async()=>{const c=document.getElementById('mark-class').value;if(!c)return;const s=await getDocs(query(collection(db,"subjects"),where("class","==",c)));const el=document.getElementById('mark-sub');el.innerHTML='<option>Select...</option>';s.forEach(d=>{const o=document.createElement('option');o.value=d.id;o.innerText=d.data().name;el.appendChild(o);});};
+window.loadMarks=async()=>{const c=document.getElementById('mark-class').value,sub=document.getElementById('mark-sub').value;if(!c||!sub)return;const stu=await getDocs(query(collection(db,"students"),where("class","==",c)));const sc=await getDocs(query(collection(db,"scores"),where("class","==",c),where("subjectId","==",sub),where("session","==",currentSession),where("term","==",currentTerm)));const map={};sc.forEach(d=>map[d.data().studentId]=d.data());let h='';stu.forEach(d=>{const s=map[d.id]||{ca:'',exam:''};h+=`<tr data-sid="${d.id}" class="border-b"><td class="p-2">${d.data().name}</td><td class="p-2"><input type="number" class="w-full border p-1 text-center" value="${s.ca}" onchange="saveMark(this)"></td><td class="p-2"><input type="number" class="w-full border p-1 text-center mark-exam-input" value="${s.exam}" onchange="saveMark(this)"></td><td class="p-2 text-center font-bold text-green-700 total">${(Number(s.ca)||0)+(Number(s.exam)||0)}</td></tr>`;});document.getElementById('mark-list').innerHTML=h;};
+window.saveMark=async(i)=>{const tr=i.closest('tr'),sid=tr.dataset.sid,c=document.getElementById('mark-class').value,sub=document.getElementById('mark-sub').value,ins=tr.querySelectorAll('input'),ca=Number(ins[0].value),ex=Number(ins[1].value);tr.querySelector('.total').innerText=ca+ex;await setDoc(doc(db,"scores",`${sid}_${sub}_${currentTerm.replace(/\s/g,'')}`),{studentId:sid,class:c,subjectId:sub,session:currentSession,term:currentTerm,ca,exam:ex},{merge:true});showToast("Saved");};
+window.toggleMarkInputType=()=>{const b=document.getElementById('mark-toggle-btn'),ins=document.querySelectorAll('.mark-exam-input');if(b.innerText.includes("CBT")){b.innerText="Switch to Manual";ins.forEach(i=>i.setAttribute('readonly',true));}else{b.innerText="Switch to CBT";ins.forEach(i=>i.removeAttribute('readonly'));}};
+window.loadTimetable=async()=>{const c=document.getElementById('tt-class').value;if(!c)return;const s=await getDoc(doc(db,"timetables",c));if(s.exists())document.getElementById('tt-grid').innerHTML=s.data().html;else renderTTGrid();};
+window.saveTimetable=async()=>{await setDoc(doc(db,"timetables",document.getElementById('tt-class').value),{html:document.getElementById('tt-grid').innerHTML});showToast("Saved");};
+
+// CBT
+window.loadExams=async()=>{const l=document.getElementById('exam-list');let q=collection(db,"exams");if(currentUser.role==='teacher')q=query(q,where("class","==",currentUser.assignedClass));onSnapshot(q,s=>{l.innerHTML='';const sel=document.getElementById('result-exam-select');if(sel)sel.innerHTML='<option>Select...</option>';s.forEach(d=>{const e=d.data();l.innerHTML+=`<div class="border p-4 rounded bg-gray-50 shadow-sm"><h4 class="font-bold text-green-800">${e.title}</h4><p class="text-xs text-gray-500">${e.class} | ${e.duration}m | ${e.questions.length}Q</p><div class="mt-2 flex gap-2"><button onclick="toggleExam('${d.id}',${e.active})" class="text-xs px-2 py-1 rounded ${e.active?'bg-red-100 text-red-600':'bg-green-100 text-green-600'}">${e.active?'Close':'Open'}</button><button onclick="deleteDoc(doc(db,'exams','${d.id}'))" class="text-xs px-2 py-1 bg-gray-200">Del</button></div></div>`;if(sel){const o=document.createElement('option');o.value=d.id;o.innerText=e.title;sel.appendChild(o);}});});};
+window.toggleExam=async(id,s)=>await updateDoc(doc(db,"exams",id),{active:!s});
+window.openCreateExam=()=>{const m=document.getElementById('generic-modal');document.getElementById('modal-title').innerText="New Exam";document.getElementById('modal-body').innerHTML=`<form onsubmit="saveExam(event)" class="space-y-3"><input id="ex-title" class="border p-2 w-full" placeholder="Title" required><div class="flex gap-2"><select id="ex-class" class="border p-2 flex-1"></select><input id="ex-dur" type="number" class="border p-2 w-20" placeholder="Min"></div><textarea id="ex-inst" class="border p-2 w-full h-20" placeholder="Instructions"></textarea><div id="q-container" class="max-h-60 overflow-y-auto space-y-2"></div><button type="button" onclick="addQuestion()" class="text-blue-600 font-bold">+ Question</button><button type="submit" class="bg-green-600 text-white w-full py-2 font-bold">Publish</button></form>`;populateClassSelect('ex-class');m.classList.remove('hidden');};
+window.addQuestion=()=>{const d=document.createElement('div');d.className="bg-gray-100 p-2 rounded q-item";d.innerHTML=`<input class="w-full border p-1 text-sm q-text" placeholder="Q"><div class="grid grid-cols-2 gap-1 mt-1"><input class="border p-1 text-xs q-opt-a" placeholder="A"><input class="border p-1 text-xs q-opt-b" placeholder="B"><input class="border p-1 text-xs q-opt-c" placeholder="C"><input class="border p-1 text-xs q-opt-d" placeholder="D"></div><select class="border p-1 w-full mt-1 text-xs q-cor"><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select>`;document.getElementById('q-container').appendChild(d);};
+window.saveExam=async(e)=>{e.preventDefault();const qs=[];document.querySelectorAll('.q-item').forEach(d=>qs.push({text:d.querySelector('.q-text').value,options:{A:d.querySelector('.q-opt-a').value,B:d.querySelector('.q-opt-b').value,C:d.querySelector('.q-opt-c').value,D:d.querySelector('.q-opt-d').value},correct:d.querySelector('.q-cor').value}));await addDoc(collection(db,"exams"),{title:document.getElementById('ex-title').value,class:document.getElementById('ex-class').value,duration:document.getElementById('ex-dur').value,instructions:document.getElementById('ex-inst').value,questions:qs,active:true,session:currentSession});closeModal('generic-modal');showToast("Published");};
+window.loadExamResults=async()=>{const eid=document.getElementById('result-exam-select').value,l=document.getElementById('result-list');l.innerHTML='';const s=await getDocs(query(collection(db,"exam_results"),where("examId","==",eid)));s.forEach(d=>{const r=d.data(),safe=JSON.stringify(r).replace(/"/g,'&quot;');l.innerHTML+=`<tr class="border-b"><td class="p-2">${r.studentName}</td><td class="p-2 font-bold">${r.score}/${r.total}</td><td class="p-2">${r.timeTaken}m</td><td class="p-2"><button onclick="viewResultDetails(${safe})" class="underline text-blue-600">Review</button></td><td class="p-2 text-right"><button onclick="pushToReport(${safe})" class="bg-blue-100 text-blue-600 px-2 rounded">Push</button></td></tr>`;});};
+window.viewResultDetails=(r)=>{const m=document.getElementById('generic-modal');document.getElementById('modal-title').innerText=`${r.studentName}`;let h=`<div class="h-64 overflow-y-auto space-y-2">`;if(r.answers)r.answers.forEach((a,i)=>{h+=`<div class="p-2 border rounded ${a.userChoice===a.correctChoice?'bg-green-50':'bg-red-50'}"><p class="font-bold text-xs">Q${i+1}: ${a.q}</p><p class="text-xs">Choice: ${a.userChoice} (Ans: ${a.correctChoice})</p></div>`;});h+='</div>';document.getElementById('modal-body').innerHTML=h;m.classList.remove('hidden');};
+window.pushToReport=async(r)=>{const m=document.getElementById('generic-modal');document.getElementById('modal-title').innerText="Push Score";document.getElementById('modal-body').innerHTML=`<p>Score: ${r.score}/${r.total}</p><select id="push-sub" class="border p-2 w-full mb-4"></select><button onclick="confirmPush('${r.studentId}',${r.score},${r.total})" class="bg-green-600 text-white w-full py-2">Confirm</button>`;const s=await getDocs(query(collection(db,"subjects"),where("class","==",r.class)));const sl=document.getElementById('push-sub');s.forEach(d=>{const o=document.createElement('option');o.value=d.id;o.innerText=d.data().name;sl.appendChild(o);});m.classList.remove('hidden');};
+window.confirmPush=async(sid,sc,tot)=>{const sub=document.getElementById('push-sub').value,ex=Math.round((sc/tot)*60);await setDoc(doc(db,"scores",`${sid}_${sub}_${currentTerm.replace(/\s/g,'')}`),{studentId:sid,subjectId:sub,session:currentSession,term:currentTerm,exam:ex},{merge:true});closeModal('generic-modal');showToast("Saved");};
+
+// Push all exam results to reports
+window.pushAllExamResults = async () => {
+  const eid = document.getElementById('result-exam-select').value;
+  if(!eid) return showToast('Select an exam first', 'error');
+  // Get exam details
+  const examSnap = await getDoc(doc(db, "exams", eid));
+  const exam = examSnap.data();
+  const className = exam.class;
+  // Get subjects for that class
+  const subSnap = await getDocs(query(collection(db, "subjects"), where("class", "==", className)));
+  if(subSnap.empty) return showToast('No subjects found for this class', 'error');
+  // Ask user to select subject
+  const modal = document.getElementById('generic-modal');
+  document.getElementById('modal-title').innerText = 'Select Subject for Exam';
+  let options = '';
+  subSnap.forEach(d => { options += `<option value="${d.id}">${d.data().name}</option>`; });
+  document.getElementById('modal-body').innerHTML = `
+    <select id="bulk-push-subject" class="border p-2 w-full mb-4">${options}</select>
+    <button onclick="confirmPushAllExam('${eid}')" class="bg-green-600 text-white w-full py-2 rounded">Push All Scores</button>
+  `;
+  modal.classList.remove('hidden');
+};
+
+window.confirmPushAllExam = async (eid) => {
+  const subjectId = document.getElementById('bulk-push-subject').value;
+  const examSnap = await getDoc(doc(db, "exams", eid));
+  const exam = examSnap.data();
+  const resultsSnap = await getDocs(query(collection(db, "exam_results"), where("examId", "==", eid)));
+  const students = await getDocs(query(collection(db, "students"), where("class", "==", exam.class)));
+  const studentMap = {};
+  students.forEach(d => studentMap[d.data().studentId] = d.id);
+  for (let resDoc of resultsSnap.docs) {
+    const r = resDoc.data();
+    const studentId = r.studentId;
+    const score = r.score;
+    const total = r.total;
+    const examScore = Math.round((score / total) * 60); // convert to 60-mark exam
+    const sid = studentMap[studentId];
+    if(sid) {
+      await setDoc(doc(db, "scores", `${sid}_${subjectId}_${currentTerm.replace(/\s/g,'')}`), {
+        studentId: sid,
+        subjectId: subjectId,
+        session: currentSession,
+        term: currentTerm,
+        exam: examScore
+      }, { merge: true });
+    }
+  }
+  closeModal('generic-modal');
+  showToast('All scores pushed to reports');
+};
+
+// ATTENDANCE SAVE
+window.loadAttendance=async()=>{
+  const cls=document.getElementById('att-class').value;
+  const date=document.getElementById('att-date').value;
+  if(!cls||!date)return;
+  const list=document.getElementById('att-list');
+  list.innerHTML='Loading...';
+  const docId=`${cls}_${date}`;
+  const attDoc=await getDoc(doc(db,"attendance",docId));
+  const attData=attDoc.exists()?attDoc.data().records:{};
+  const students=await getDocs(query(collection(db,"students"),where("class","==",cls)));
+  let html='';
+  students.forEach((d,i)=>{
+    const s=d.data();
+    const checked=attData[d.id]!==false;
+    html+=`<tr class="border-b"><td class="p-2 border">${i+1}</td><td class="p-2 border">${s.name}</td><td class="p-2 border text-center"><input type="checkbox" class="att-check w-5 h-5 accent-green-600" data-sid="${d.id}" ${checked?'checked':''}></td></tr>`;
+  });
+  list.innerHTML=html;
+};
+window.saveAttendance=async()=>{
+  const cls=document.getElementById('att-class').value;
+  const date=document.getElementById('att-date').value;
+  if(!cls)return;
+  const records={};
+  document.querySelectorAll('.att-check').forEach(c=>records[c.dataset.sid]=c.checked);
+  await setDoc(doc(db,"attendance",`${cls}_${date}`),{class:cls,date,records,timestamp:new Date()});
+  showToast("Attendance Saved");
+};
+
+window.promoteStudents=async(f)=>{if(confirm(f?"Promote all?":"Demote all?")){const map={"Prenursery":"Nursery 1","Nursery 1":"Nursery 2","Nursery 2":"Primary 1","Primary 1":"Primary 2","Primary 2":"Primary 3","Primary 3":"Primary 4","Primary 4":"Primary 5","Primary 5":"Primary 6","Primary 6":"JSS 1","JSS 1":"JSS 2","JSS 2":"JSS 3","JSS 3":"SS 1","SS 1":"SS 2","SS 2":"SS 3","SS 3":"Alumni"};const t=f?map:Object.fromEntries(Object.entries(map).map(a=>a.reverse()));const s=await getDocs(collection(db,"students"));s.forEach(d=>{const n=t[d.data().class];if(n)updateDoc(doc(db,"students",d.id),{class:n});});showToast("Done");}};
+window.updateSettings = async () => {
+  const session = document.getElementById('set-session').value;
+  const term = document.getElementById('set-term').value;
+  const regOpen = document.querySelector('input[name="regStatus"]:checked').value === 'open';
+  const regMsg = document.getElementById('reg-message-admin').value;
+  await setDoc(doc(db, "settings", "general"), {
+    session, term,
+    registrationOpen: regOpen,
+    registrationMessage: regMsg,
+    published: resultsPublished
+  }, { merge: true });
+  showToast('Settings updated');
+  setTimeout(() => location.reload(), 1000);
+};
+window.loadChat=()=>{onSnapshot(query(collection(db,"chats"),orderBy("timestamp","asc"),limit(50)),s=>{const b=document.getElementById('chat-box');b.innerHTML='';s.forEach(d=>{const m=d.data(),me=m.sender===currentUser.name;b.innerHTML+=`<div class="flex flex-col ${me?'items-end':'items-start'}"><div class="flex items-center gap-2 mb-1 ${me?'flex-row-reverse':''}"><img src="${m.senderPhoto || 'https://via.placeholder.com/40'}" class="w-6 h-6 rounded-full object-cover border border-gray-200"><span class="text-[10px] opacity-70">${m.sender}</span></div><div class="px-4 py-2 rounded-lg text-sm mb-2 max-w-[80%] ${me?'bg-green-600 text-white':'bg-gray-100 text-gray-800'}">${m.text}</div></div>`;});b.scrollTop=b.scrollHeight;});};
+window.sendChat=async()=>{const t=document.getElementById('chat-msg').value;if(t){const photo = currentUser.role === 'parent' ? currentUser.child.photo : currentUser.photo; await addDoc(collection(db,"chats"),{text:t,sender:currentUser.name, senderPhoto: photo, timestamp:new Date(),role:currentUser.role});document.getElementById('chat-msg').value='';}};
+window.addActivity=async(a)=>{if(currentUser.role!=='parent')await addDoc(collection(db,"activities"),{user:currentUser.name,role:currentUser.role,action:a,timestamp:new Date()});};
+
+// TEACHER MANAGEMENT
+window.renderTeachers = () => {
+  onSnapshot(collection(db, "teachers"), (snap) => {
+    const l = document.getElementById('teacher-list');
+    l.innerHTML = '';
+    snap.forEach(d => {
+      const t = d.data();
+      const safe = JSON.stringify({id: d.id, ...t}).replace(/"/g, '&quot;');
+      l.innerHTML += `<div class="bg-white border rounded p-4 shadow relative group">
+        <h4 class="font-bold">${t.name}</h4><p class="text-xs text-gray-500">${t.email}</p><p class="text-xs bg-green-100 inline-block px-1 rounded mt-1">Class: ${t.assignedClass}</p>
+        <div class="absolute top-2 right-2 hidden group-hover:block">
+          <button onclick="editTeacher(${safe})" class="text-blue-500"><i class="fas fa-edit"></i></button>
+          <button onclick="deleteDoc(doc(db,'teachers','${d.id}'))" class="text-red-500 ml-2"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>`;
+    });
+  });
+};
+window.openAddTeacher = () => {
+  const m = document.getElementById('generic-modal');
+  document.getElementById('modal-title').innerText = "Add Teacher";
+  document.getElementById('modal-body').innerHTML = `
+    <form onsubmit="saveTeacher(event)" class="space-y-3">
+      <input type="hidden" id="tc-id">
+      <input type="text" id="tc-name" class="border p-2 rounded w-full bg-gray-50" placeholder="Name" required>
+      <input type="text" id="tc-email" class="border p-2 rounded w-full bg-gray-50" placeholder="Username/Email" required>
+      <input type="text" id="tc-pass" class="border p-2 rounded w-full bg-gray-50" placeholder="Password" required>
+      <select id="tc-class" class="border p-2 rounded w-full bg-gray-50" required></select>
+      <button type="submit" class="bg-green-600 text-white w-full py-2 rounded font-bold shadow hover:bg-green-700">Save Teacher</button>
+    </form>`;
+  populateClassSelect('tc-class', false);
+  m.classList.remove('hidden');
+};
+window.saveTeacher = async (e) => {
+  e.preventDefault();
+  const id = document.getElementById('tc-id').value;
+  const data = {
+    name: document.getElementById('tc-name').value,
+    email: document.getElementById('tc-email').value,
+    password: document.getElementById('tc-pass').value,
+    assignedClass: document.getElementById('tc-class').value
+  };
+  if(id) await updateDoc(doc(db, "teachers", id), data);
+  else await addDoc(collection(db, "teachers"), data);
+  closeModal('generic-modal'); showToast('Teacher Saved');
+};
+window.editTeacher = (t) => {
+  openAddTeacher();
+  document.getElementById('tc-id').value = t.id;
+  document.getElementById('tc-name').value = t.name;
+  document.getElementById('tc-email').value = t.email;
+  document.getElementById('tc-pass').value = t.password;
+  document.getElementById('tc-class').value = t.assignedClass;
+};
+
+// STUDENT CBT STARTUP
+window.startCbtMode=async(s)=>{
+  document.getElementById('login-section').classList.add('hidden');
+  document.getElementById('student-cbt-interface').classList.remove('hidden');
+  document.getElementById('cbt-name').innerText=s.name;
+  document.getElementById('cbt-id').innerText=s.studentId;
+  document.getElementById('cbt-photo').src=s.photo||'';
+  const q=query(collection(db,"exams"),where("class","==",s.class),where("active","==",true));
+  const sn=await getDocs(q);
+  const c=document.getElementById('cbt-content');
+  c.classList.remove('hidden');
+  if(sn.empty){c.innerHTML='<div class="text-center mt-20 text-gray-400">No Exams</div>';return;}
+  c.innerHTML='<div class="grid gap-4" id="exam-select-grid"></div>';
+  sn.forEach(d=>{const e=d.data();document.getElementById('exam-select-grid').innerHTML+=`<div onclick="loadExamQuestions('${d.id}')" class="bg-white p-6 rounded shadow cursor-pointer border hover:border-green-500"><h3>${e.title}</h3><p>${e.duration}m</p></div>`;});
+  window.activeExams={}; sn.forEach(d=>window.activeExams[d.id]=d.data());
+  window.currentStudent=s;
+};
+window.loadExamQuestions=(id)=>{const e=window.activeExams[id];window.currentExamData={id,...e};window.examAnswers={};document.getElementById('cbt-exam-title').innerText=e.title;if(e.instructions){document.getElementById('cbt-content').classList.add('hidden');document.getElementById('cbt-instructions').classList.remove('hidden');document.getElementById('cbt-inst-text').innerText=e.instructions;}else startExamQuestions();};
+window.startExamQuestions=()=>{document.getElementById('cbt-instructions').classList.add('hidden');document.getElementById('cbt-content').classList.remove('hidden');const e=window.currentExamData;let h='';e.questions.forEach((q,i)=>{h+=`<div class="bg-white p-4 rounded shadow mb-4"><p class="font-bold mb-2">${i+1}. ${q.text}</p><div class="grid grid-cols-2 gap-2">${Object.entries(q.options).map(([k,v])=>`<div onclick="selectOpt('${i}','${k}',this)" class="opt-card border p-2 rounded cursor-pointer hover:bg-green-50 flex gap-2"><span class="font-bold">${k}</span> ${v}</div>`).join('')}</div></div>`;});document.getElementById('cbt-content').innerHTML=h;let t=e.duration*60;window.cbtStartTime=new Date();const tim=document.getElementById('cbt-timer');window.examInterval=setInterval(()=>{t--;tim.innerText=`${Math.floor(t/60)}:${t%60}`;if(t<=0)submitExam();},1000);};
+window.selectOpt=(i,o,e)=>{window.examAnswers[i]=o;e.parentElement.querySelectorAll('.opt-card').forEach(d=>d.className="opt-card border p-2 rounded cursor-pointer hover:bg-green-50 flex gap-2");e.className="opt-card border p-2 rounded cursor-pointer bg-green-100 border-green-500 flex gap-2";};
+window.submitExam=async()=>{clearInterval(window.examInterval);let sc=0;const ex=window.currentExamData,det=[];ex.questions.forEach((q,i)=>{const c=window.examAnswers[i]===q.correct;if(c)sc++;det.push({q:q.text,userChoice:window.examAnswers[i]||'None',correctChoice:q.correct});});await addDoc(collection(db,"exam_results"),{examId:ex.id,examTitle:ex.title,studentId:window.currentStudent.studentId,studentName:window.currentStudent.name,class:window.currentStudent.class,score:sc,total:ex.questions.length,answers:det,timeTaken:Math.round((new Date()-window.cbtStartTime)/60000),timestamp:new Date()});confetti({particleCount:150});document.getElementById('cbt-content').innerHTML=`<div class="text-center mt-20"><h1 class="text-3xl font-bold text-green-700">Finished!</h1><p class="text-xl">Score: ${sc}/${ex.questions.length}</p><button onclick="location.reload()" class="mt-4 bg-gray-800 text-white px-6 py-2 rounded">Logout</button></div>`;document.getElementById('cbt-submit-btn').style.display='none';};
+
+// Helper functions
+async function loadParentChart(child) {
+  const scoresSnap = await getDocs(query(collection(db, "scores"), where("studentId", "==", child.id), where("session", "==", currentSession)));
+  const terms = ['1st Term', '2nd Term', '3rd Term'];
+  const averages = [];
+  for (let term of terms) {
+    const termScores = scoresSnap.docs.filter(d => d.data().term === term);
+    let total = 0, count = 0;
+    termScores.forEach(d => { total += (d.data().ca || 0) + (d.data().exam || 0); count++; });
+    averages.push(count ? (total/count) : 0);
+  }
+  new Chart(document.getElementById('chart-parent'), {
+    type: 'line',
+    data: { labels: terms, datasets: [{ label: 'Average Score', data: averages, borderColor: '#059669', tension: 0.4 }] }
+  });
+}
+
+// Class Record functions
+window.loadClassRecord = async () => {
+  const cls = document.getElementById('record-class').value;
+  const sess = document.getElementById('record-session').value;
+  if(!cls) return;
+  const studentsSnap = await getDocs(query(collection(db, "students"), where("class", "==", cls)));
+  const subjectsSnap = await getDocs(query(collection(db, "subjects"), where("class", "==", cls)));
+  const subjects = [];
+  subjectsSnap.forEach(d => subjects.push({ id: d.id, name: d.data().name }));
+  const scoresSnap = await getDocs(query(collection(db, "scores"), where("class", "==", cls), where("session", "==", sess), where("term", "==", currentTerm)));
+  const scoresMap = {};
+  scoresSnap.forEach(d => {
+    const s = d.data();
+    const key = `${s.studentId}_${s.subjectId}`;
+    scoresMap[key] = { ca: s.ca || 0, exam: s.exam || 0 };
+  });
+  let table = '<table class="class-record-table"><thead><tr><th>Student</th>';
+  subjects.forEach(sub => { table += `<th colspan="2">${sub.name}</th>`; });
+  table += '<th>Total</th><th>Avg</th></tr><tr><th></th>';
+  subjects.forEach(() => { table += '<th>CA</th><th>Exam</th>'; });
+  table += '<th></th><th></th></tr></thead><tbody>';
+  let grandTotal = 0, grandCount = 0;
+  for (let stuDoc of studentsSnap.docs) {
+    const stu = stuDoc.data();
+    let row = `<tr><td style="text-align:left;">${stu.name}</td>`;
+    let studentTotal = 0, subjectCount = 0;
+    subjects.forEach(sub => {
+      const key = `${stuDoc.id}_${sub.id}`;
+      const sc = scoresMap[key] || { ca: 0, exam: 0 };
+      const total = sc.ca + sc.exam;
+      row += `<td>${sc.ca}</td><td>${sc.exam}</td>`;
+      studentTotal += total;
+      if(total > 0) subjectCount++;
+    });
+    const avg = subjectCount ? (studentTotal/subjectCount).toFixed(2) : 0;
+    row += `<td><strong>${studentTotal}</strong></td><td><strong>${avg}</strong></td></tr>`;
+    table += row;
+    grandTotal += studentTotal;
+    grandCount += subjectCount;
+  }
+  table += `</tbody></table>`;
+  document.getElementById('class-record-container').innerHTML = table;
+};
+
+window.printClassRecord = () => {
+  const cls = document.getElementById('record-class').value;
+  const sess = document.getElementById('record-session').value;
+  if(!cls) return showToast('Select a class', 'error');
+  const content = document.getElementById('class-record-container').innerHTML;
+  const printWindow = window.open('', '_blank');
+  printWindow.document.write(`
+    <html>
+    <head>
+      <title>Class Record - ${cls}</title>
+      <style>
+        body { font-family: 'Poppins', sans-serif; padding: 10mm; }
+        h2 { text-align: center; color: #064e3b; }
+        table { border-collapse: collapse; width: 100%; font-size: 10px; }
+        th, td { border: 1px solid #064e3b; padding: 4px; text-align: center; }
+        th { background: #064e3b; color: white; }
+      </style>
+    </head>
+    <body>
+      <h2>TASIU ADAMU COMMUNITY COLLEGE</h2>
+      <p>Class: ${cls} | Session: ${sess} | Term: ${currentTerm}</p>
+      ${content}
+    </body>
+    </html>
+  `);
+  printWindow.document.close();
+  printWindow.focus();
+  printWindow.print();
+};
+
+// Parent Timetable
+async function loadParentTimetable(childClass) {
+  const ttDoc = await getDoc(doc(db, "timetables", childClass));
+  const container = document.getElementById('parent-timetable-container');
+  if(!ttDoc.exists()) {
+    container.innerHTML = '<p class="text-gray-400">No timetable uploaded yet.</p>';
+    return;
+  }
+  container.innerHTML = ttDoc.data().html;
+}
+
+// Broadcast functions
+window.showBroadcasts = () => {
+  const modal = document.getElementById('broadcast-modal');
+  const listDiv = document.getElementById('broadcast-list');
+  const composeDiv = document.getElementById('broadcast-compose');
+  if(currentUser.role === 'admin') composeDiv.classList.remove('hidden');
+  else composeDiv.classList.add('hidden');
+  let q = collection(db, "broadcasts");
+  if(currentUser.role !== 'admin') {
+    q = query(q, where("target", "in", ['all', currentUser.role]));
+  }
+  onSnapshot(q, (snap) => {
+    let html = '';
+    snap.forEach(d => {
+      const b = d.data();
+      const read = b.readBy?.includes(currentUser.email || currentUser.name);
+      html += `
+        <div class="broadcast-item p-4 rounded ${read ? '' : 'unread'}">
+          <p class="text-sm">${b.message}</p>
+          <p class="text-xs text-gray-500 mt-1">${new Date(b.timestamp?.toDate()).toLocaleString()} | Target: ${b.target}</p>
+          ${!read ? `<button onclick="markBroadcastRead('${d.id}')" class="text-xs text-blue-600 mt-1">Mark as read</button>` : ''}
+        </div>
+      `;
+    });
+    listDiv.innerHTML = html || '<p class="text-gray-400 text-center">No broadcasts</p>';
+  });
+  modal.classList.remove('hidden');
+};
+
+window.markBroadcastRead = async (id) => {
+  const ref = doc(db, "broadcasts", id);
+  const snap = await getDoc(ref);
+  const readBy = snap.data().readBy || [];
+  if(!readBy.includes(currentUser.email || currentUser.name)) {
+    readBy.push(currentUser.email || currentUser.name);
+    await updateDoc(ref, { readBy });
+  }
+  showBroadcasts();
+};
+
+window.sendBroadcast = async () => {
+  const target = document.getElementById('broadcast-target').value;
+  const individual = document.getElementById('broadcast-individual').value;
+  const message = document.getElementById('broadcast-message').value;
+  if(!message) return showToast('Message cannot be empty', 'error');
+  const broadcast = {
+    message,
+    target: target === 'individual' ? individual : target,
+    timestamp: new Date(),
+    readBy: []
+  };
+  await addDoc(collection(db, "broadcasts"), broadcast);
+  showToast('Broadcast sent');
+  document.getElementById('broadcast-message').value = '';
+  closeModal('broadcast-modal');
+};
+
+window.sendBroadcastFromPage = async () => {
+  const target = document.getElementById('broad-target').value;
+  const individual = document.getElementById('broad-individual').value;
+  const message = document.getElementById('broad-message').value;
+  if(!message) return showToast('Message cannot be empty', 'error');
+  const broadcast = {
+    message,
+    target: target === 'individual' ? individual : target,
+    timestamp: new Date(),
+    readBy: []
+  };
+  await addDoc(collection(db, "broadcasts"), broadcast);
+  showToast('Broadcast sent');
+  document.getElementById('broad-message').value = '';
+  loadPastBroadcasts();
+};
+
+async function loadPastBroadcasts() {
+  const snap = await getDocs(query(collection(db, "broadcasts"), orderBy("timestamp", "desc")));
+  const list = document.getElementById('past-broadcasts');
+  let html = '';
+  snap.forEach(d => {
+    const b = d.data();
+    html += `<div class="border p-3 rounded text-sm bg-gray-50"><span class="font-bold">${b.target}:</span> ${b.message} <span class="text-xs text-gray-400">${new Date(b.timestamp?.toDate()).toLocaleString()}</span></div>`;
+  });
+  list.innerHTML = html;
+}
+
+// Toggle individual input
+document.getElementById('broadcast-target')?.addEventListener('change', (e) => {
+  const ind = document.getElementById('broadcast-individual');
+  ind.style.display = e.target.value === 'individual' ? 'inline-block' : 'none';
+});
+document.getElementById('broad-target')?.addEventListener('change', (e) => {
+  const ind = document.getElementById('broad-individual');
+  ind.style.display = e.target.value === 'individual' ? 'inline-block' : 'none';
+});
+
+// --- NEW REGISTRATION FUNCTIONS ---
+window.reviewRegistration = () => {
+  const name = document.getElementById('reg-name').value;
+  const dob = document.getElementById('reg-dob').value;
+  const cls = document.getElementById('reg-class').value;
+  const photoFile = document.getElementById('reg-photo').files[0];
+  if(!name || !dob || !cls || !photoFile) return showToast('All fields required', 'error');
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    document.getElementById('review-photo').src = e.target.result;
+    document.getElementById('review-name').innerText = name;
+    document.getElementById('review-dob').innerText = dob;
+    document.getElementById('review-class').innerText = cls;
+    document.getElementById('reg-step1').classList.add('hidden');
+    document.getElementById('reg-step2').classList.remove('hidden');
+    document.getElementById('step1').classList.remove('active');
+    document.getElementById('step2').classList.add('active');
+  };
+  reader.readAsDataURL(photoFile);
+};
+window.backToStep1 = () => {
+  document.getElementById('reg-step2').classList.add('hidden');
+  document.getElementById('reg-step1').classList.remove('hidden');
+  document.getElementById('step2').classList.remove('active');
+  document.getElementById('step1').classList.add('active');
+};
+window.submitRegistration = async () => {
+  const name = document.getElementById('reg-name').value;
+  const dob = document.getElementById('reg-dob').value;
+  const cls = document.getElementById('reg-class').value;
+  const photo = document.getElementById('review-photo').src;
+  const appNo = `TACC/APP/${new Date().getFullYear()}/${Math.floor(1000+Math.random()*9000)}`;
+  const application = {
+    name, dob, class: cls, photo, appNo,
+    status: 'pending',
+    comments: '',
+    timestamp: new Date()
+  };
+  await addDoc(collection(db, "applications"), application);
+  await addDoc(collection(db, "broadcasts"), {
+    message: `New application from ${name}`,
+    timestamp: new Date(),
+    read: false
+  });
+  document.getElementById('app-no-display').innerText = appNo;
+  document.getElementById('reg-step2').classList.add('hidden');
+  document.getElementById('reg-step3').classList.remove('hidden');
+  document.getElementById('step2').classList.remove('active');
+  document.getElementById('step3').classList.add('active');
+  window.currentAppNo = appNo;
+  window.currentAppData = application;
+};
+window.downloadAcknowledgement = () => {
+  const data = window.currentAppData;
+  const slip = document.createElement('div');
+  slip.className = 'acknowledgement-slip';
+  slip.innerHTML = `
+    <div style="text-align: center; border-bottom: 3px solid #064e3b; padding-bottom: 15px; margin-bottom: 20px;">
+      <h1 style="font-family: 'Cinzel'; font-size: 24px; color: #064e3b;">TASIU ADAMU COMMUNITY COLLEGE</h1>
+      <p style="font-size: 12px;">Gwarzo Road, Sabuwar Kasuwa Garo, Kabo LGA, Kano State</p>
+    </div>
+    <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 30px;">
+      <img src="${data.photo}" style="width: 120px; height: 120px; border: 4px solid #d97706; border-radius: 10px; object-fit: cover;">
+      <div>
+        <p><strong>Application No:</strong> ${data.appNo}</p>
+        <p><strong>Full Name:</strong> ${data.name}</p>
+        <p><strong>Date of Birth:</strong> ${data.dob}</p>
+        <p><strong>Applied Class:</strong> ${data.class}</p>
+        <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
+      </div>
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${data.appNo}" style="width: 100px; height: 100px;">
+    </div>
+    <div style="border: 2px dashed #064e3b; padding: 20px; text-align: center; font-family: 'Courier Prime';">
+      <p>This acknowledges receipt of your application. Please keep this slip for future reference.</p>
+      <p>You will be notified of the admission decision via this portal.</p>
+    </div>
+    <div style="margin-top: 40px; text-align: center; font-size: 10px; color: #666;">
+      Powered by CodeVerge Technology
+    </div>
+  `;
+  const zone = document.getElementById('pdf-render-zone');
+  zone.innerHTML = '';
+  zone.appendChild(slip);
+  html2pdf().from(slip).set({
+    margin: 10, filename: `Acknowledgement_${data.appNo}.pdf`,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  }).save().then(() => zone.innerHTML = '');
+};
+
+// --- APPLICATIONS MANAGEMENT ---
+window.loadApplications = async () => {
+  const filterClass = document.getElementById('app-filter-class').value;
+  let q = collection(db, "applications");
+  if(currentUser.role === 'teacher') {
+    q = query(q, where("class", "==", currentUser.assignedClass));
+  } else if(filterClass) {
+    q = query(q, where("class", "==", filterClass));
+  }
+  const snap = await getDocs(q);
+  const list = document.getElementById('applications-list');
+  list.innerHTML = '';
+  snap.forEach(d => {
+    const app = d.data();
+    const statusColor = app.status === 'admitted' ? 'text-green-600' : app.status === 'rejected' ? 'text-red-600' : 'text-yellow-600';
+    list.innerHTML += `
+      <tr class="border-b">
+        <td class="p-3 font-mono text-xs">${app.appNo}</td>
+        <td class="p-3">${app.name}</td>
+        <td class="p-3">${app.class}</td>
+        <td class="p-3">${app.dob}</td>
+        <td class="p-3 font-bold ${statusColor}">${app.status}</td>
+        <td class="p-3">
+          <button onclick="openApplicationModal('${d.id}')" class="bg-blue-500 text-white px-3 py-1 rounded text-xs hover:bg-blue-600">Review</button>
+        </td>
+      </tr>
+    `;
+  });
+};
+
+window.openApplicationModal = async (id) => {
+  const docSnap = await getDoc(doc(db, "applications", id));
+  const app = docSnap.data();
+  const m = document.getElementById('generic-modal');
+  document.getElementById('modal-title').innerText = `Application: ${app.name}`;
+  let buttons = `
+    <button onclick="updateApplicationStatus('${id}')" class="bg-green-600 text-white w-full py-2 rounded font-bold">Update</button>
+  `;
+  if(app.status === 'admitted') {
+    buttons += `<button onclick="moveToStudents('${id}')" class="bg-purple-600 text-white w-full py-2 rounded font-bold mt-2"><i class="fas fa-user-graduate mr-2"></i>Move to Students</button>`;
+    buttons += `<button onclick="downloadAdmissionLetter('${id}')" class="bg-blue-600 text-white w-full py-2 rounded font-bold mt-2"><i class="fas fa-file-pdf mr-2"></i>Generate Admission Letter</button>`;
+  }
+  document.getElementById('modal-body').innerHTML = `
+    <div class="space-y-4">
+      <div class="flex items-center gap-4">
+        <img src="${app.photo}" class="w-20 h-20 rounded-full object-cover border-2 border-green-600" onerror="this.src='https://via.placeholder.com/150'">
+        <div>
+          <p><strong>App No:</strong> ${app.appNo}</p>
+          <p><strong>DOB:</strong> ${app.dob}</p>
+          <p><strong>Class:</strong> ${app.class}</p>
+        </div>
+      </div>
+      <div>
+        <label class="text-xs font-bold text-gray-500">Status</label>
+        <select id="app-status" class="border p-2 rounded w-full">
+          <option value="pending" ${app.status==='pending'?'selected':''}>Pending</option>
+          <option value="admitted" ${app.status==='admitted'?'selected':''}>Admitted</option>
+          <option value="rejected" ${app.status==='rejected'?'selected':''}>Rejected</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-xs font-bold text-gray-500">Comment</label>
+        <textarea id="app-comment" class="border p-2 rounded w-full" rows="3">${app.comments || ''}</textarea>
+      </div>
+      ${buttons}
+    </div>
+  `;
+  m.classList.remove('hidden');
+};
+
+window.updateApplicationStatus = async (id) => {
+  const status = document.getElementById('app-status').value;
+  const comments = document.getElementById('app-comment').value;
+  await updateDoc(doc(db, "applications", id), { status, comments });
+  closeModal('generic-modal');
+  loadApplications();
+  showToast('Status updated');
+};
+
+window.moveToStudents = async (id) => {
+  const docSnap = await getDoc(doc(db, "applications", id));
+  const app = docSnap.data();
+  if(app.status !== 'admitted') {
+    return showToast('Only admitted applicants can be moved', 'error');
+  }
+  const studentId = `TACC/${new Date().getFullYear()}/${Math.floor(1000+Math.random()*9000)}`;
+  const studentData = {
+    name: app.name,
+    class: app.class,
+    photo: app.photo,
+    studentId: studentId,
+  };
+  await addDoc(collection(db, "students"), studentData);
+  await addActivity(`Moved applicant ${app.name} to students with ID ${studentId}`);
+  await updateDoc(doc(db, "applications", id), { status: 'converted' });
+  closeModal('generic-modal');
+  loadApplications();
+  showToast(`Applicant moved to students with ID ${studentId}`);
+};
+
+window.downloadAdmissionLetter = async (id) => {
+  const docSnap = await getDoc(doc(db, "applications", id));
+  const app = docSnap.data();
+  const letter = document.createElement('div');
+  letter.className = 'admission-letter';
+  letter.innerHTML = `
+    <div style="text-align: center; border-bottom: 3px solid #064e3b; padding-bottom: 15px; margin-bottom: 20px;">
+      <h1 style="font-family: 'Cinzel'; font-size: 28px; color: #064e3b;">TASIU ADAMU COMMUNITY COLLEGE</h1>
+      <p style="font-size: 12px;">Gwarzo Road, Sabuwar Kasuwa Garo, Kabo LGA, Kano State</p>
+    </div>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+      <img src="${app.photo}" style="width: 100px; height: 100px; border: 4px solid #d97706; border-radius: 10px;" onerror="this.src='https://via.placeholder.com/150'">
+      <div style="text-align: right;">
+        <h2 style="font-size: 22px; font-weight: bold; color: #064e3b;">ADMISSION LETTER</h2>
+        <p>Ref: ${app.appNo}</p>
+      </div>
+    </div>
+    <div style="font-size: 14px; line-height: 1.8; margin-bottom: 30px;">
+      <p>Dear <strong>${app.name}</strong>,</p>
+      <p>We are pleased to inform you that you have been offered admission into <strong>Tasiu Adamu Community College of Science and Qur'anic Studies</strong> for the session ${currentSession} in <strong>${app.class}</strong>.</p>
+      <p>Please find below the school rules and regulations:</p>
+      <ul style="margin-left: 20px;">
+        <li>Students must be punctual and regular in attendance.</li>
+        <li>Proper uniform must be worn at all times.</li>
+        <li>Mobile phones are not allowed during classes.</li>
+        <li>Respect for teachers and fellow students is mandatory.</li>
+        <li>Any form of cheating or misconduct will lead to dismissal.</li>
+      </ul>
+      <p>You are required to report to the school office on or before <strong>${new Date(Date.now() + 30*86400000).toLocaleDateString()}</strong> for registration.</p>
+    </div>
+    <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+      <div>
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${app.appNo}" style="width: 80px; height: 80px;">
+      </div>
+      <div style="text-align: center; position: relative;">
+        <div class="stamp-box" style="position: relative; transform: rotate(-5deg); margin-bottom: 10px;">
+          <div class="stamp-text-sm">TASIU ADAMU</div>
+          <div class="stamp-text-lg">ADMITTED</div>
+          <div class="stamp-text-sm">COLLEGE</div>
+        </div>
+        <p><strong>Principal's Signature</strong></p>
+      </div>
+    </div>
+    <div style="margin-top: 40px; text-align: center; font-size: 10px; color: #666;">
+      This is a computer-generated letter. No signature is required.
+    </div>
+  `;
+  const zone = document.getElementById('pdf-render-zone');
+  zone.innerHTML = '';
+  zone.appendChild(letter);
+  html2pdf().from(letter).set({
+    margin: 10, filename: `Admission_${app.appNo}.pdf`,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  }).save().then(() => zone.innerHTML = '');
+};
+
+// --- PUBLIC STATUS CHECK ---
+window.checkAdmissionStatus = async () => {
+  const appNo = document.getElementById('status-appno').value.trim();
+  if(!appNo) return showToast('Enter application number', 'error');
+  const q = query(collection(db, "applications"), where("appNo", "==", appNo));
+  const snap = await getDocs(q);
+  const resultDiv = document.getElementById('status-result');
+  const downloadDiv = document.getElementById('status-download');
+  if(snap.empty) {
+    resultDiv.classList.add('hidden');
+    showToast('Application not found', 'error');
+    return;
+  }
+  const app = snap.docs[0].data();
+  document.getElementById('status-name').innerText = `Name: ${app.name}`;
+  document.getElementById('status-class').innerText = `Applied Class: ${app.class}`;
+  const decisionEl = document.getElementById('status-decision');
+  decisionEl.innerText = app.status === 'admitted' ? 'ADMITTED' : app.status === 'rejected' ? 'NOT ADMITTED' : 'PENDING';
+  decisionEl.className = `mt-2 p-2 rounded text-white font-bold ${app.status === 'admitted' ? 'bg-green-600' : app.status === 'rejected' ? 'bg-red-600' : 'bg-yellow-500'}`;
+  document.getElementById('status-comment').innerText = app.comments || '';
+  if(app.status === 'admitted') {
+    downloadDiv.classList.remove('hidden');
+    window.currentAdmittedApp = app;
+  } else {
+    downloadDiv.classList.add('hidden');
+  }
+  resultDiv.classList.remove('hidden');
+};
+
+window.downloadAdmissionLetterFromStatus = () => {
+  if(window.currentAdmittedApp) {
+    const app = window.currentAdmittedApp;
+    const letter = document.createElement('div');
+    letter.className = 'admission-letter';
+    letter.innerHTML = `
+      <div style="text-align: center; border-bottom: 3px solid #064e3b; padding-bottom: 15px; margin-bottom: 20px;">
+        <h1 style="font-family: 'Cinzel'; font-size: 28px; color: #064e3b;">TASIU ADAMU COMMUNITY COLLEGE</h1>
+        <p style="font-size: 12px;">Gwarzo Road, Sabuwar Kasuwa Garo, Kabo LGA, Kano State</p>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <img src="${app.photo}" style="width: 100px; height: 100px; border: 4px solid #d97706; border-radius: 10px;" onerror="this.src='https://via.placeholder.com/150'">
+        <div style="text-align: right;">
+          <h2 style="font-size: 22px; font-weight: bold; color: #064e3b;">ADMISSION LETTER</h2>
+          <p>Ref: ${app.appNo}</p>
+        </div>
+      </div>
+      <div style="font-size: 14px; line-height: 1.8; margin-bottom: 30px;">
+        <p>Dear <strong>${app.name}</strong>,</p>
+        <p>We are pleased to inform you that you have been offered admission into <strong>Tasiu Adamu Community College of Science and Qur'anic Studies</strong> for the session ${currentSession} in <strong>${app.class}</strong>.</p>
+        <p>Please find below the school rules and regulations:</p>
+        <ul style="margin-left: 20px;">
+          <li>Students must be punctual and regular in attendance.</li>
+          <li>Proper uniform must be worn at all times.</li>
+          <li>Mobile phones are not allowed during classes.</li>
+          <li>Respect for teachers and fellow students is mandatory.</li>
+          <li>Any form of cheating or misconduct will lead to dismissal.</li>
+        </ul>
+        <p>You are required to report to the school office on or before <strong>${new Date(Date.now() + 30*86400000).toLocaleDateString()}</strong> for registration.</p>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+        <div>
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${app.appNo}" style="width: 80px; height: 80px;">
+        </div>
+        <div style="text-align: center; position: relative;">
+          <div class="stamp-box" style="position: relative; transform: rotate(-5deg); margin-bottom: 10px;">
+            <div class="stamp-text-sm">TASIU ADAMU</div>
+            <div class="stamp-text-lg">ADMITTED</div>
+            <div class="stamp-text-sm">COLLEGE</div>
+          </div>
+          <p><strong>Principal's Signature</strong></p>
+        </div>
+      </div>
+      <div style="margin-top: 40px; text-align: center; font-size: 10px; color: #666;">
+        This is a computer-generated letter. No signature is required.
+      </div>
+    `;
+    const zone = document.getElementById('pdf-render-zone');
+    zone.innerHTML = '';
+    zone.appendChild(letter);
+    html2pdf().from(letter).set({
+      margin: 10, filename: `Admission_${app.appNo}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    }).save().then(() => zone.innerHTML = '');
+  }
+};
+
+checkAuth();
+</script>
+</body>
+</html>
